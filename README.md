@@ -33,7 +33,7 @@ and notifying users about new notices from the AIUB website.
 2. Build the project:
 
    ```sh
-   go build -o aiub-notice.exe
+   go build -ldflags '-s -w' -o aiub-notice.exe
    ```
 
 ## Usage
