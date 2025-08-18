@@ -7,6 +7,28 @@ and notifying users about new notices from the AIUB website.
 
 <img width="500" height="287" alt="Screenshot 2025-08-18 224648" src="https://github.com/user-attachments/assets/411999be-0da6-4a23-9fd3-15bd97c7b44f" />
 
+```
+$./aiub-notice.exe --help
+AIUB Notice Notifier is a command-line tool that fetches and displays notices from AIUB's official website.
+
+Usage:
+  aiub-notice [command]
+
+Available Commands:
+  autostart   Manage autostart settings for AIUB Notice Fetcher service
+  completion  Generate the autocompletion script for the specified shell
+  help        Help about any command
+  last        Display the last fetched notice
+  log         View the log of notices
+  register    Register AIUB Notice Fetcher with Windows Toast Notifications (Recommended)
+  start       Start the AIUB Notice Fetcher service
+
+Flags:
+  -h, --help   help for aiub-notice
+
+Use "aiub-notice [command] --help" for more information about a command.
+```
+
 ## Requirements
 
 - Go 1.25 or later
