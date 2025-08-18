@@ -1,6 +1,6 @@
 # AIUB Notice Fetcher
 
-AIUB Notice Fetcher is a cross-platform CLI tool and background service for automatically fetching, caching,
+AIUB Notice Fetcher is a CLI tool and background service for automatically fetching,
 and notifying users about new notices from the AIUB website.
 
 ## Preview
