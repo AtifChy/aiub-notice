@@ -4,7 +4,13 @@ AIUB Notice Fetcher is a cross-platform CLI tool and background service for auto
 and notifying users about new notices from the AIUB website.
 
 ## Preview
+
 <img width="500" height="287" alt="Screenshot 2025-08-18 224648" src="https://github.com/user-attachments/assets/411999be-0da6-4a23-9fd3-15bd97c7b44f" />
+
+## Requirements
+
+- Go 1.25 or later
+- Windows 10/11
 
 ## Features
 
@@ -72,4 +78,3 @@ Pull requests and issues are welcome!
 ## License
 
 [MIT](./LICENSE)
-
