@@ -23,6 +23,8 @@ func EnableAutostart() error {
 		return fmt.Errorf("failed to get absolute path of executable: %w", err)
 	}
 
+	autostartValue := fmt.Sprintf(`"%s" start`, exePath)
+
 	key, _, err := registry.CreateKey(
 		registry.CURRENT_USER,
 		autostartKeyPath,
@@ -33,7 +35,7 @@ func EnableAutostart() error {
 	}
 	defer key.Close()
 
-	return key.SetStringValue(common.AppName, exePath)
+	return key.SetStringValue(common.AppName, autostartValue)
 }
 
 func DisableAutostart() error {
