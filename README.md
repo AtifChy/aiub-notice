@@ -38,6 +38,16 @@ and notifying users about new notices from the AIUB website.
 
 ## Usage
 
+### Register
+
+To register the program and ensure that toast notifications display the correct icon and name, run the following command once:
+
+```sh
+./aiub-notice register
+```
+
+**Note:** Registration is recommended before using other features.
+
 ### Start the Service
 
 ```sh
