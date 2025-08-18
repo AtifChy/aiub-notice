@@ -7,10 +7,16 @@ import (
 	"path/filepath"
 
 	"github.com/AtifChy/aiub-notice/internal/common"
-	"golang.org/x/sys/windows/registry"
 )
 
-const autostartKeyPath = `Software\Microsoft\Windows\CurrentVersion\Run`
+func getStartupPath() (string, error) {
+	appData, err := os.UserConfigDir()
+	if err != nil {
+		return "", fmt.Errorf("failed to get appdata directory: %w", err)
+	}
+	startupPath := filepath.Join(appData, "Microsoft", "Windows", "Start Menu", "Programs", "Startup")
+	return startupPath, nil
+}
 
 func EnableAutostart() error {
 	exePath, err := os.Executable()
@@ -23,52 +29,45 @@ func EnableAutostart() error {
 		return fmt.Errorf("failed to get absolute path of executable: %w", err)
 	}
 
-	autostartValue := fmt.Sprintf(`"%s" start`, exePath)
-
-	key, _, err := registry.CreateKey(
-		registry.CURRENT_USER,
-		autostartKeyPath,
-		registry.SET_VALUE,
-	)
+	startupPath, err := getStartupPath()
 	if err != nil {
-		return fmt.Errorf("failed to create registry key: %w", err)
+		return fmt.Errorf("failed to get startup path: %w", err)
 	}
-	defer key.Close()
 
-	return key.SetStringValue(common.AppName, autostartValue)
+	batPath := filepath.Join(startupPath, common.AppName+".bat")
+	batContent := fmt.Sprintf("@echo off\nstart /b \"\" \"%s\" start\n", exePath)
+	return os.WriteFile(batPath, []byte(batContent), 0644)
 }
 
 func DisableAutostart() error {
-	key, err := registry.OpenKey(
-		registry.CURRENT_USER,
-		autostartKeyPath,
-		registry.SET_VALUE,
-	)
+	startupPath, err := getStartupPath()
 	if err != nil {
-		return fmt.Errorf("failed to open registry key: %w", err)
+		return err
 	}
-	defer key.Close()
 
-	return key.DeleteValue(common.AppName)
+	batPath := filepath.Join(startupPath, common.AppName+".bat")
+	err = os.Remove(batPath)
+	if os.IsExist(err) {
+		return fmt.Errorf("failed to remove autostart file: %w", err)
+	}
+
+	return nil
 }
 
 func IsAutostartEnabled() (bool, error) {
-	key, err := registry.OpenKey(
-		registry.CURRENT_USER,
-		autostartKeyPath,
-		registry.QUERY_VALUE,
-	)
+	startupPath, err := getStartupPath()
 	if err != nil {
-		return false, fmt.Errorf("failed to open registry key: %w", err)
+		return false, err
 	}
 
-	_, _, err = key.GetStringValue(common.AppName)
-	if err == registry.ErrNotExist {
-		return false, nil // Autostart is not enabled
+	batPath := filepath.Join(startupPath, common.AppName+".bat")
+	_, err = os.Stat(batPath)
+	if err == nil {
+		return true, nil
 	}
-	if err != nil {
-		return false, fmt.Errorf("failed to get autostart value: %w", err)
+	if os.IsNotExist(err) {
+		return false, nil
 	}
 
-	return true, nil // Autostart is enabled
+	return false, err
 }
