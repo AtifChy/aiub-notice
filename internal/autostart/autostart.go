@@ -36,7 +36,13 @@ func EnableAutostart(interval time.Duration) error {
 	}
 
 	batPath := filepath.Join(startupPath, common.AppName+".bat")
-	batContent := fmt.Sprintf("@echo off\nstart /b \"\" \"%s\" start --interval %s --quiet\n", exePath, interval)
+	batContent := fmt.Sprintf(
+		`@echo off
+powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -NoProfile -Command ^
+		"Start-Process '%s' -ArgumentList 'start --interval %s --quiet' -WindowStyle Hidden"
+`,
+		exePath, interval,
+	)
 	return os.WriteFile(batPath, []byte(batContent), 0644)
 }
 

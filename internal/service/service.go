@@ -7,7 +7,6 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"syscall"
 	"time"
 
 	"github.com/AtifChy/aiub-notice/internal/notice"
@@ -34,7 +33,6 @@ func Run(aumid string, checkInterval time.Duration) {
 	ctx, stop := signal.NotifyContext(
 		context.Background(),
 		os.Interrupt,
-		syscall.SIGTERM,
 	)
 	defer stop()
 
