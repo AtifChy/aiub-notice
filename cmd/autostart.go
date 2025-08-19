@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/AtifChy/aiub-notice/internal/autostart"
 	"github.com/spf13/cobra"
@@ -19,10 +20,16 @@ var autostartCmd = &cobra.Command{
 		status, _ := cmd.Flags().GetBool("status")
 
 		if enable {
-			err := autostart.EnableAutostart()
+			interval, err := cmd.Flags().GetDuration("interval")
+			if err != nil {
+				log.Fatalf("Error parsing interval flag: %v", err)
+			}
+
+			err = autostart.EnableAutostart(interval)
 			if err != nil {
 				log.Fatalf("Error enabling autostart: %v", err)
 			}
+
 			fmt.Println("Autostart enabled for AIUB Notice Fetcher service.")
 		} else if disable {
 			err := autostart.DisableAutostart()
@@ -46,6 +53,8 @@ func init() {
 	rootCmd.AddCommand(autostartCmd)
 
 	autostartCmd.Flags().Bool("enable", false, "Enable autostart for the AIUB Notice Fetcher service")
+	autostartCmd.Flags().DurationP("interval", "i", 1*time.Hour, "Set the interval for fetching notices [Used with --enable]")
+
 	autostartCmd.Flags().Bool("disable", false, "Disable autostart for the AIUB Notice Fetcher service")
 	autostartCmd.Flags().BoolP("status", "s", false, "Check if autostart is enabled")
 }
