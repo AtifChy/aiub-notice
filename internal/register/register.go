@@ -9,7 +9,7 @@ import (
 )
 
 func Register(aumid, displayName, iconPath string) error {
-	regPath := fmt.Sprintf("SOFTWARE\\Classes\\AppUserModelId\\%s", aumid)
+	regPath := fmt.Sprintf(`SOFTWARE\Classes\AppUserModelId\%s`, aumid)
 
 	key, _, err := registry.CreateKey(registry.CURRENT_USER, regPath, registry.SET_VALUE)
 	if err != nil {

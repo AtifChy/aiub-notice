@@ -53,12 +53,7 @@ var startCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(startCmd)
 
-	startCmd.Flags().DurationP(
-		"interval",
-		"i",
-		30*time.Minute,
-		"Set the interval for fetching notices",
-	)
+	startCmd.Flags().DurationP("interval", "i", 30*time.Minute, "Set the interval for fetching notices")
 	startCmd.Flags().Bool("quiet", false, "Suppress console output")
 }
 

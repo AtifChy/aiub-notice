@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/AtifChy/aiub-notice/internal/common"
 )
@@ -18,7 +19,7 @@ func getStartupPath() (string, error) {
 	return startupPath, nil
 }
 
-func EnableAutostart() error {
+func EnableAutostart(interval time.Duration) error {
 	exePath, err := os.Executable()
 	if err != nil {
 		return fmt.Errorf("failed to get executable path: %w", err)
@@ -31,11 +32,11 @@ func EnableAutostart() error {
 
 	startupPath, err := getStartupPath()
 	if err != nil {
-		return fmt.Errorf("failed to get startup path: %w", err)
+		return err
 	}
 
 	batPath := filepath.Join(startupPath, common.AppName+".bat")
-	batContent := fmt.Sprintf("@echo off\nstart /b \"\" \"%s\" start\n", exePath)
+	batContent := fmt.Sprintf("@echo off\nstart /b \"\" \"%s\" start --interval %s --quiet\n", exePath, interval)
 	return os.WriteFile(batPath, []byte(batContent), 0644)
 }
 
@@ -46,8 +47,7 @@ func DisableAutostart() error {
 	}
 
 	batPath := filepath.Join(startupPath, common.AppName+".bat")
-	err = os.Remove(batPath)
-	if os.IsExist(err) {
+	if err = os.Remove(batPath); os.IsExist(err) {
 		return fmt.Errorf("failed to remove autostart file: %w", err)
 	}
 
