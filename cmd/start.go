@@ -19,6 +19,13 @@ var startCmd = &cobra.Command{
 	Short: "Start the AIUB Notice Fetcher service",
 	Long:  `Start the AIUB Notice Fetcher service to fetch and display notices from the AIUB website.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		quiet, _ := cmd.Flags().GetBool("quiet")
+		if quiet {
+			null, _ := os.OpenFile(os.DevNull, os.O_WRONLY, 0)
+			os.Stdout = null
+			os.Stderr = null
+		}
+
 		checkInterval, err := cmd.Flags().GetDuration("interval")
 		if err != nil {
 			log.Fatalf("Error parsing interval flag: %v", err)
@@ -52,6 +59,7 @@ func init() {
 		30*time.Minute,
 		"Set the interval for fetching notices",
 	)
+	startCmd.Flags().Bool("quiet", false, "Suppress console output")
 }
 
 func setupLogging() (*os.File, error) {
