@@ -27,12 +27,7 @@ var startCmd = &cobra.Command{
 			os.Stderr = null
 		}
 
-		checkInterval, err := cmd.Flags().GetDuration("interval")
-		if err != nil {
-			log.Fatalf("Error parsing interval flag: %v", err)
-		}
-
-		logFile, err := setupLogging()
+		logFile, err := setupLogging(quiet)
 		if err != nil {
 			log.Fatalf("Error setting up logging: %v", err)
 		}
@@ -40,10 +35,15 @@ var startCmd = &cobra.Command{
 
 		lock, err := acquireLock()
 		if err != nil {
-			fmt.Println("Another instance is already running. Exiting.")
+			log.Println("Another instance is already running. Exiting.")
 			return
 		}
 		defer lock.Close()
+
+		checkInterval, err := cmd.Flags().GetDuration("interval")
+		if err != nil {
+			log.Fatalf("Error parsing interval flag: %v", err)
+		}
 
 		log.Println("Single instance lock acquired.")
 		service.Run(common.AUMID, checkInterval)
@@ -58,7 +58,7 @@ func init() {
 	startCmd.Flags().Bool("quiet", false, "Suppress console output")
 }
 
-func setupLogging() (*os.File, error) {
+func setupLogging(quiet bool) (*os.File, error) {
 	logPath, err := common.GetLogPath()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get log file path: %w", err)
@@ -72,8 +72,12 @@ func setupLogging() (*os.File, error) {
 		return nil, fmt.Errorf("failed to open log file: %w", err)
 	}
 
-	multiWriter := io.MultiWriter(os.Stdout, logFile)
-	log.SetOutput(multiWriter)
+	if quiet {
+		log.SetOutput(logFile)
+	} else {
+		multiWriter := io.MultiWriter(os.Stdout, logFile)
+		log.SetOutput(multiWriter)
+	}
 
 	return logFile, nil
 }
