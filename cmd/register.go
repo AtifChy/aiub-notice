@@ -4,10 +4,11 @@ import (
 	"log"
 	"path/filepath"
 
+	"github.com/spf13/cobra"
+
 	"github.com/AtifChy/aiub-notice/internal/common"
 	"github.com/AtifChy/aiub-notice/internal/register"
 	"github.com/AtifChy/aiub-notice/internal/toast"
-	"github.com/spf13/cobra"
 )
 
 // registerCmd represents the register command

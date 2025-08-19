@@ -5,8 +5,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/AtifChy/aiub-notice/internal/autostart"
 	"github.com/spf13/cobra"
+
+	"github.com/AtifChy/aiub-notice/internal/autostart"
 )
 
 // autostartCmd represents the autostart command

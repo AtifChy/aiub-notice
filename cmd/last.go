@@ -5,10 +5,11 @@ import (
 	"log"
 	"sort"
 
+	"github.com/spf13/cobra"
+
 	"github.com/AtifChy/aiub-notice/internal/common"
 	"github.com/AtifChy/aiub-notice/internal/notice"
 	"github.com/AtifChy/aiub-notice/internal/toast"
-	"github.com/spf13/cobra"
 )
 
 // lastCmd represents the last command

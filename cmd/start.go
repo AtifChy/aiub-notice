@@ -7,10 +7,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/AtifChy/aiub-notice/internal/common"
-	"github.com/AtifChy/aiub-notice/internal/service"
 	"github.com/allan-simon/go-singleinstance"
 	"github.com/spf13/cobra"
+
+	"github.com/AtifChy/aiub-notice/internal/common"
+	"github.com/AtifChy/aiub-notice/internal/service"
 )
 
 // startCmd represents the start command

@@ -6,8 +6,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/AtifChy/aiub-notice/internal/common"
 	"github.com/spf13/cobra"
+
+	"github.com/AtifChy/aiub-notice/internal/common"
 )
 
 var logCmd = &cobra.Command{
