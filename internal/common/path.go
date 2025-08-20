@@ -15,16 +15,20 @@ func GetDataPath() (string, error) {
 	return filepath.Join(cacheDir, AppName), nil
 }
 
-// GetLogPath returns the path to the log file for the application.
-func GetLogPath() (string, error) {
-	logDir, err := GetDataPath()
+func GetLogPath() string {
+	return filepath.Join(os.TempDir(), AppName+".log")
+}
+
+// GetLogFile returns a file handle for the application's log file.
+func GetLogFile() (*os.File, error) {
+	logFile, err := os.OpenFile(
+		GetLogPath(),
+		os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644,
+	)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	if err := os.MkdirAll(logDir, 0755); err != nil {
-		return "", fmt.Errorf("failed to create log directory: %w", err)
-	}
-	return filepath.Join(logDir, AppName+".log"), nil
+	return logFile, nil
 }
 
 // GetTempPath returns the path to the temporary directory for the application.

@@ -59,15 +59,7 @@ func init() {
 }
 
 func setupLogging(quiet bool) (*os.File, error) {
-	logPath, err := common.GetLogPath()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get log file path: %w", err)
-	}
-
-	logFile, err := os.OpenFile(
-		logPath,
-		os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644,
-	)
+	logFile, err := common.GetLogFile()
 	if err != nil {
 		return nil, fmt.Errorf("failed to open log file: %w", err)
 	}

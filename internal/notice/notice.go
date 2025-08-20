@@ -27,12 +27,12 @@ func GetNotices() ([]Notice, error) {
 
 	response, err := http.Get(noticeURL)
 	if err != nil {
-		return nil, fmt.Errorf("failed to fetch notices: %w", err)
+		return nil, err
 	}
 	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("failed to fetch notices: received status code %d", response.StatusCode)
+		return nil, fmt.Errorf("received status code %d", response.StatusCode)
 	}
 
 	document, err := goquery.NewDocumentFromReader(response.Body)

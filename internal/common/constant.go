@@ -2,6 +2,7 @@
 package common
 
 const (
-	AppName = "aiub-notice"
-	AUMID   = "atifchy." + AppName
+	AppName      = "aiub-notice"
+	LauncherName = AppName + "-launcher"
+	AUMID        = "atifchy." + AppName
 )

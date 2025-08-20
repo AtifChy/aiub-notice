@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/AtifChy/aiub-notice/internal/common"
+	"github.com/jxeng/shortcut"
 )
 
 func getStartupPath() (string, error) {
@@ -29,21 +30,24 @@ func EnableAutostart(interval time.Duration) error {
 	if err != nil {
 		return fmt.Errorf("failed to get absolute path of executable: %w", err)
 	}
+	exeDir := filepath.Dir(exePath)
+
+	launcherPath := filepath.Join(exeDir, common.LauncherName+".exe")
+	args := fmt.Sprintf("start --interval %s --quiet", interval)
 
 	startupPath, err := getStartupPath()
 	if err != nil {
 		return err
 	}
 
-	batPath := filepath.Join(startupPath, common.AppName+".bat")
-	batContent := fmt.Sprintf(
-		`@echo off
-powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -NoProfile -Command ^
-		"Start-Process '%s' -ArgumentList 'start --interval %s --quiet' -WindowStyle Hidden"
-`,
-		exePath, interval,
-	)
-	return os.WriteFile(batPath, []byte(batContent), 0644)
+	sc := shortcut.Shortcut{
+		ShortcutPath: filepath.Join(startupPath, common.AppName+".lnk"),
+		Target:       launcherPath,
+		IconLocation: launcherPath + ",0",
+		Arguments:    args,
+	}
+
+	return shortcut.Create(sc)
 }
 
 func DisableAutostart() error {
@@ -52,8 +56,8 @@ func DisableAutostart() error {
 		return err
 	}
 
-	batPath := filepath.Join(startupPath, common.AppName+".bat")
-	if err = os.Remove(batPath); os.IsExist(err) {
+	scPath := filepath.Join(startupPath, common.AppName+".lnk")
+	if err = os.Remove(scPath); os.IsExist(err) {
 		return fmt.Errorf("failed to remove autostart file: %w", err)
 	}
 
@@ -66,8 +70,8 @@ func IsAutostartEnabled() (bool, error) {
 		return false, err
 	}
 
-	batPath := filepath.Join(startupPath, common.AppName+".bat")
-	_, err = os.Stat(batPath)
+	scPath := filepath.Join(startupPath, common.AppName+".lnk")
+	_, err = os.Stat(scPath)
 	if err == nil {
 		return true, nil
 	}

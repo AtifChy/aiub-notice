@@ -16,10 +16,7 @@ var logCmd = &cobra.Command{
 	Short: "View the log of notices",
 	Long:  `View the log of notices fetched by the AIUB Notice Fetcher.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		logPath, err := common.GetLogPath()
-		if err != nil {
-			log.Fatalf("Error getting log file path: %v", err)
-		}
+		logPath := common.GetLogPath()
 
 		clear, err := cmd.Flags().GetBool("clear")
 		if err != nil {
@@ -27,21 +24,20 @@ var logCmd = &cobra.Command{
 		}
 
 		if clear {
-			file, err := os.OpenFile(logPath, os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
+			logFile, err := common.GetLogFile()
 			if err != nil {
 				log.Fatalf("Error clearing log file: %v", err)
 			}
-			file.Close()
+			logFile.Close()
 			fmt.Println("Log file cleared.")
 			return
 		}
 
 		logFile, err := os.Open(logPath)
-		if err != nil {
-			if os.IsNotExist(err) {
-				fmt.Println("No log file found. Please run the service first to generate logs.")
-				os.Exit(0)
-			}
+		if os.IsNotExist(err) {
+			fmt.Println("No log file found. Please run the service first to generate logs.")
+			os.Exit(0)
+		} else if err != nil {
 			log.Fatalf("Error opening log file: %v", err)
 		}
 		defer logFile.Close()
