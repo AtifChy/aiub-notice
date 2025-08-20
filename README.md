@@ -29,11 +29,6 @@ Flags:
 Use "aiub-notice [command] --help" for more information about a command.
 ```
 
-## Requirements
-
-- Go 1.25 or later
-- Windows 10/11
-
 ## Features
 
 - Periodically checks for new notices from the AIUB website
@@ -43,19 +38,36 @@ Use "aiub-notice [command] --help" for more information about a command.
 - CLI commands to view the last notice, manage autostart, and more
 - Supports autostart on Windows
 
+## Requirements
+
+- Windows 10/11
+- GNU make (for build automation)
+- Go 1.25 or later
+
 ## Installation
+
+### Install dependencies
+
+```sh
+scoop install make go
+```
+
+**Note:** If you don't have [Scoop](https://scoop.sh/) installed, please follow the instructions on their website to install it.
+Or you can install Go and Make manually.
+
+### Build the project
 
 1. Clone this repository:
 
-   ```sh
-   git clone https://github.com/AtifChy/aiub-notice.git
-   cd aiub-notice
-   ```
+```sh
+git clone https://github.com/AtifChy/aiub-notice.git
+cd aiub-notice
+```
 
 2. Build the project:
 
-   ```sh
-   go build -ldflags '-s -w' -o aiub-notice.exe
+```sh
+make build
    ```
 
 ## Usage
