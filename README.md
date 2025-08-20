@@ -108,12 +108,19 @@ To register the program and ensure that toast notifications display the correct 
 
 ## Project Structure
 
-- `cmd/` — CLI commands
-- `internal/service/` — Main service logic (periodic checks, notifications)
-- `internal/notice/` — Notice fetching, parsing, and caching
-- `internal/toast/` — Notification logic
-- `internal/common/` — Shared constants and helpers
-- `internal/autostart/` — Autostart management (Windows)
+- `cmd/` — Entrypoints for CLI applications and subcommands
+  - `aiub-notice/` — Main CLI application
+  - `aiub-notice-launcher/` — (If present) Launcher utility
+- `internal/service/` — Main service logic: periodic checks, notifications, service loop
+- `internal/notice/` — Notice fetching, parsing, caching, and seen notice tracking
+- `internal/toast/` — Windows Toast notification logic and icon handling
+- `internal/common/` — Shared constants, paths, and helpers
+- `internal/autostart/` — Windows autostart management
+- `internal/register/` — Registration logic for notifications
+
+Other files:
+
+- `README.md`, `LICENSE`, `Makefile`, etc. — Project documentation and build scripts
 
 ## Contributing
 
