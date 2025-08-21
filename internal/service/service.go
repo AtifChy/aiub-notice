@@ -75,11 +75,23 @@ func checkNotice(aumid string, seenNotices map[string]struct{}) error {
 	if len(newNotices) > 0 {
 		log.Printf("Found %d new notices. Sending notifications...", len(newNotices))
 
-		_, err := notice.GetSeenNoticesPath()
-		if os.IsExist(err) {
+		path, err := notice.GetSeenNoticesPath()
+		if err != nil {
+			log.Printf("Error getting seen notices path: %v", err)
+		}
+
+		if _, err = os.Stat(path); err == nil {
 			for _, n := range newNotices {
-				toast.Show(aumid, n)
+				err := toast.Show(aumid, n)
+				if err != nil {
+					log.Printf("Error showing toast notification for notice %s: %v", n.Title, err)
+				}
+				log.Printf("Sent notification for notice: '%s'", n.Title)
 			}
+		} else if os.IsNotExist(err) {
+			log.Println("Seen notices file does not exist, skipping notifications.")
+		} else {
+			log.Printf("Error checking seen notices file: %v", err)
 		}
 
 		if err := notice.SaveSeenNotices(seenNotices); err != nil {
