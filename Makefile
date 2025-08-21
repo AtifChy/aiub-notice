@@ -1,6 +1,7 @@
 # Go parameters
 GOCMD=go
 GOBUILD=$(GOCMD) build
+GOINSTALL=$(GOCMD) install
 GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
@@ -54,3 +55,8 @@ test:
 deps:
 	$(GOMOD) tidy
 	$(GOGET) -u ./...
+
+## install: Install the application
+install:
+	$(GOINSTALL) $(LDFLAGS) $(APP_SRC)
+	$(GOINSTALL) $(LDFLAGS) -ldflags="-H=windowsgui" $(LAUNCHER_SRC)
