@@ -7,8 +7,9 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/AtifChy/aiub-notice/internal/common"
 	"github.com/jxeng/shortcut"
+
+	"github.com/AtifChy/aiub-notice/internal/common"
 )
 
 func getStartupPath() (string, error) {
@@ -72,12 +73,11 @@ func IsAutostartEnabled() (bool, error) {
 
 	scPath := filepath.Join(startupPath, common.AppName+".lnk")
 	_, err = os.Stat(scPath)
-	if err == nil {
-		return true, nil
-	}
 	if os.IsNotExist(err) {
 		return false, nil
+	} else if err != nil {
+		return false, err
 	}
 
-	return false, err
+	return true, nil
 }

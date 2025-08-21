@@ -2,15 +2,13 @@
 package toast
 
 import (
-	"log"
-
 	"github.com/electricbubble/go-toast"
 
 	"github.com/AtifChy/aiub-notice/internal/notice"
 )
 
-func Show(aumid string, notice notice.Notice) {
-	err := toast.Push(
+func Show(aumid string, notice notice.Notice) error {
+	return toast.Push(
 		notice.Desc,
 		toast.WithAppID(aumid),
 		toast.WithTitle(notice.Title),
@@ -18,7 +16,4 @@ func Show(aumid string, notice notice.Notice) {
 		toast.WithProtocolAction("Dismiss"),
 		toast.WithAudio(toast.Default),
 	)
-	if err != nil {
-		log.Printf("Error: failed to show toast notification: %v", err)
-	}
 }

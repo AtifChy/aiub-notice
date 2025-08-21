@@ -54,7 +54,7 @@ func init() {
 	rootCmd.AddCommand(autostartCmd)
 
 	autostartCmd.Flags().Bool("enable", false, "Enable autostart for the AIUB Notice Fetcher service")
-	autostartCmd.Flags().DurationP("interval", "i", 1*time.Hour, "Set the interval for fetching notices [Used with --enable]")
+	autostartCmd.Flags().DurationP("interval", "i", 30*time.Minute, "Set the interval for fetching notices [Used with --enable]")
 
 	autostartCmd.Flags().Bool("disable", false, "Disable autostart for the AIUB Notice Fetcher service")
 	autostartCmd.Flags().BoolP("status", "s", false, "Check if autostart is enabled")

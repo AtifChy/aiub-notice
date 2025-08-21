@@ -28,7 +28,7 @@ help:
 	@echo "Available targets:"
 	@grep -E '^## ' $(MAKEFILE_LIST) | sed 's/^## /  /;s/: / - /'
 
-## all: Build the application and its launcher
+## all: All-in-one target to clean, build, and update dependencies
 all: clean deps build
 
 ## Clean: Remove build artifacts
@@ -36,7 +36,12 @@ clean:
 	$(GOCLEAN)
 	rm -rf $(BUILD_DIR)
 
-## build: Build the application
+## dev: Build the application (development mode)
+dev:
+	$(GOBUILD) -o $(BUILD_DIR)/$(APP_NAME).exe $(APP_SRC)
+	$(GOBUILD) -ldflags="-H=windowsgui" -o $(BUILD_DIR)/$(LAUNCHER_NAME).exe $(LAUNCHER_SRC)
+
+## build: Build the application (production mode)
 build:
 	$(GOBUILD) $(LDFLAGS) -o $(BUILD_DIR)/$(APP_NAME).exe $(APP_SRC)
 	$(GOBUILD) $(LDFLAGS) -ldflags="-H=windowsgui" -o $(BUILD_DIR)/$(LAUNCHER_NAME).exe $(LAUNCHER_SRC)
