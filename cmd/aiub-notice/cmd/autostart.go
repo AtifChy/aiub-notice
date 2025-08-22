@@ -16,11 +16,7 @@ var autostartCmd = &cobra.Command{
 	Short: "Manage autostart settings for AIUB Notice Fetcher service",
 	Long:  `This command allows you to enable or disable autostart for the AIUB Notice Fetcher service on Windows systems.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		enable, _ := cmd.Flags().GetBool("enable")
-		disable, _ := cmd.Flags().GetBool("disable")
-		status, _ := cmd.Flags().GetBool("status")
-
-		if enable {
+		if enable, _ := cmd.Flags().GetBool("enable"); enable {
 			interval, err := cmd.Flags().GetDuration("interval")
 			if err != nil {
 				log.Fatalf("Error parsing interval flag: %v", err)
@@ -32,20 +28,22 @@ var autostartCmd = &cobra.Command{
 			}
 
 			fmt.Println("Autostart enabled for AIUB Notice Fetcher service.")
-		} else if disable {
+		} else if disable, _ := cmd.Flags().GetBool("disable"); disable {
 			err := autostart.DisableAutostart()
 			if err != nil {
 				log.Fatalf("Error disabling autostart: %v", err)
 			}
+
 			fmt.Println("Autostart disabled for AIUB Notice Fetcher service.")
-		} else if status {
+		} else if status, _ := cmd.Flags().GetBool("status"); status {
 			enabled, err := autostart.IsAutostartEnabled()
 			if err != nil {
 				log.Fatalf("Error checking autostart status: %v", err)
 			}
+
 			fmt.Printf("Autostart is currently %s.\n", map[bool]string{true: "enabled", false: "disabled"}[enabled])
 		} else {
-			fmt.Println("Please specify either --enable or --disable flag.")
+			_ = cmd.Help()
 		}
 	},
 }

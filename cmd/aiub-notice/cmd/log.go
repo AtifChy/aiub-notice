@@ -18,12 +18,7 @@ var logCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		logPath := common.GetLogPath()
 
-		clear, err := cmd.Flags().GetBool("clear")
-		if err != nil {
-			log.Fatalf("Error getting clear flag: %v", err)
-		}
-
-		if clear {
+		if clear, _ := cmd.Flags().GetBool("clear"); clear {
 			logFile, err := common.GetLogFile()
 			if err != nil {
 				log.Fatalf("Error clearing log file: %v", err)
