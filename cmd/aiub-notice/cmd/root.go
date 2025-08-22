@@ -5,13 +5,15 @@ import (
 	"log"
 
 	"github.com/spf13/cobra"
+
+	"github.com/AtifChy/aiub-notice/internal/common"
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "aiub-notice",
-	Short: "AIUB Notice Notifier",
-	Long:  `AIUB Notice Notifier is a command-line tool that fetches and displays notices from AIUB's official website.`,
-	// Run:   runService,
+	Use:     common.AppName,
+	Short:   "AIUB Notice Notifier",
+	Long:    `AIUB Notice Notifier is a command-line tool that fetches and displays notices from AIUB's official website.`,
+	Version: common.Version,
 }
 
 func Execute() {

@@ -8,14 +8,18 @@ GOGET=$(GOCMD) get
 GOMOD=$(GOCMD) mod
 GOENV=$(GOCMD) env
 
+# Environment variables
 GOPATH=$(shell $(GOENV) GOPATH)
 GOEXE=$(shell $(GOENV) GOEXE)
 
-LDFLAGS=-s -w
-
-# Binary names
+# Project parameters
+PKG=github.com/AtifChy/aiub-notice
 APP_NAME=aiub-notice
 LAUNCHER_NAME=$(APP_NAME)-launcher
+VERSION=$(shell git describe --tags --always --dirty --long)
+
+# Linker flags
+LDFLAGS=-s -w -X $(PKG)/internal/common.Version=$(VERSION)
 
 # Source directory
 APP_SRC=$(CURDIR)/cmd/$(APP_NAME)
