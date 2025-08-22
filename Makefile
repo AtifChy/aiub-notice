@@ -64,6 +64,10 @@ deps:
 install:
 	$(GOINSTALL) -ldflags="$(LDFLAGS)" $(APP_SRC)
 	$(GOINSTALL) -ldflags="$(LDFLAGS) -H=windowsgui" $(LAUNCHER_SRC)
+	@echo ""
+	@echo "Installation complete!"
+	@echo "Binaries installed to: $(GOPATH)/bin"
+	@echo "Add $(GOPATH)/bin to your system PATH if not already done."
 
 ## uninstall: Uninstall the application
 uninstall: _autostart_disable _aumid_deregister

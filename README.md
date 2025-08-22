@@ -7,7 +7,7 @@ and notifying users about new notices from the AIUB website.
 
 <img width="500" height="287" alt="Screenshot 2025-08-18 224648" src="https://github.com/user-attachments/assets/411999be-0da6-4a23-9fd3-15bd97c7b44f" />
 
-```
+```text
 $./aiub-notice.exe --help
 AIUB Notice Notifier is a command-line tool that fetches and displays notices from AIUB's official website.
 
@@ -15,12 +15,12 @@ Usage:
   aiub-notice [command]
 
 Available Commands:
+  aumid       Manage AUMID registration for Windows notifications
   autostart   Manage autostart settings for AIUB Notice Fetcher service
   completion  Generate the autocompletion script for the specified shell
   help        Help about any command
   last        Display the last fetched notice
   log         View the log of notices
-  register    Register AIUB Notice Fetcher with Windows Toast Notifications (Recommended)
   start       Start the AIUB Notice Fetcher service
 
 Flags:
@@ -68,7 +68,13 @@ cd aiub-notice
 
 ```sh
 make build
-   ```
+```
+
+3. Install the project:
+
+```sh
+make install
+```
 
 ## Usage
 
@@ -77,7 +83,7 @@ make build
 To register the program and ensure that toast notifications display the correct icon and name, run the following command once:
 
 ```sh
-./aiub-notice register
+./aiub-notice aumid --register
 ```
 
 **Note:** Registration is recommended before using other features.
@@ -116,7 +122,7 @@ To register the program and ensure that toast notifications display the correct 
 - `internal/toast/` — Windows Toast notification logic and icon handling
 - `internal/common/` — Shared constants, paths, and helpers
 - `internal/autostart/` — Windows autostart management
-- `internal/register/` — Registration logic for notifications
+- `internal/aumid/` — AUMID registration for Windows notifications
 
 Other files:
 

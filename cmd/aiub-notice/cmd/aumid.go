@@ -14,8 +14,17 @@ import (
 // aumidCmd represents the aumid command
 var aumidCmd = &cobra.Command{
 	Use:   "aumid",
-	Short: "Register AIUB Notice Fetcher with Windows Toast Notifications (Recommended)",
-	Long:  `This command registers the AIUB Notice Fetcher application with Windows Toast Notifications, allowing it to display notifications in the system tray.`,
+	Short: "Manage AUMID registration for Windows notifications",
+	Long: `The aumid command allows you to register or deregister the application
+AppUserModelID (AUMID) in the Windows registry. This is necessary for sending
+toast notifications on Windows.
+
+Examples:
+	# Register the application AUMID
+	aiub-notice aumid --register
+
+	# Deregister the application AUMID
+	aiub-notice aumid --deregister`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if register, _ := cmd.Flags().GetBool("register"); register {
 			iconURL := "https://www.aiub.edu/Files/Templates/AIUBv3/assets/images/aiub-logo-white-border.svg"
