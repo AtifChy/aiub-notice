@@ -7,7 +7,7 @@ GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
 GOMOD=$(GOCMD) mod
 
-LDFLAGS=-ldflags="-s -w"
+LDFLAGS=-s -w
 
 # Binary names
 APP_NAME=aiub-notice
@@ -44,8 +44,8 @@ dev:
 
 ## build: Build the application (production mode)
 build:
-	$(GOBUILD) $(LDFLAGS) -o $(BUILD_DIR)/$(APP_NAME).exe $(APP_SRC)
-	$(GOBUILD) $(LDFLAGS) -ldflags="-H=windowsgui" -o $(BUILD_DIR)/$(LAUNCHER_NAME).exe $(LAUNCHER_SRC)
+	$(GOBUILD) -ldflags="$(LDFLAGS)" -o $(BUILD_DIR)/$(APP_NAME).exe $(APP_SRC)
+	$(GOBUILD) -ldflags="$(LDFLAGS) -H=windowsgui" -o $(BUILD_DIR)/$(LAUNCHER_NAME).exe $(LAUNCHER_SRC)
 
 ## test: Run tests
 test:
@@ -58,5 +58,5 @@ deps:
 
 ## install: Install the application
 install:
-	$(GOINSTALL) $(LDFLAGS) $(APP_SRC)
-	$(GOINSTALL) $(LDFLAGS) -ldflags="-H=windowsgui" $(LAUNCHER_SRC)
+	$(GOINSTALL) -ldflags="$(LDFLAGS)" $(APP_SRC)
+	$(GOINSTALL) -ldflags="$(LDFLAGS) -H=windowsgui" $(LAUNCHER_SRC)
