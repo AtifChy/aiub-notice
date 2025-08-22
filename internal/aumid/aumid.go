@@ -1,5 +1,5 @@
-// Package register provides functionality to register an application with the Windows registry
-package register
+// Package aumid provides functions to register and deregister AppUserModelIDs (AUMIDs) in the Windows registry.
+package aumid
 
 import (
 	"fmt"
@@ -30,6 +30,17 @@ func Register(aumid, displayName, iconPath string) error {
 		}
 	} else {
 		_ = key.DeleteValue("IconUri")
+	}
+
+	return nil
+}
+
+func Deregister(aumid string) error {
+	regPath := fmt.Sprintf(`SOFTWARE\Classes\AppUserModelId\%s`, aumid)
+
+	err := registry.DeleteKey(registry.CURRENT_USER, regPath)
+	if err != nil {
+		return fmt.Errorf("failed to delete registry key %s: %w", regPath, err)
 	}
 
 	return nil
