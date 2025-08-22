@@ -66,7 +66,7 @@ install:
 	$(GOINSTALL) -ldflags="$(LDFLAGS) -H=windowsgui" $(LAUNCHER_SRC)
 
 ## uninstall: Uninstall the application
-uninstall: _autostart_disable
+uninstall: _autostart_disable _aumid_deregister
 	@read -p "Are you sure you want to uninstall $(APP_NAME)? (y/n): " confirm; \
 		if [ "$$confirm" = "y" ] || [ "$$confirm" = "Y" ]; then \
 			echo "Uninstalling $(APP_NAME)..."; \
@@ -85,4 +85,13 @@ _autostart_disable:
 			$(GOPATH)/bin/$(APP_NAME)$(GOEXE) autostart --disable || @echo "No autostart entry found or error occurred."; \
 		else \
 			echo "Skipping autostart entry removal."; \
+		fi
+
+# aumid deregister helper
+_aumid_deregister:
+	@read -p "Deregister AUMID if exists? (y/n): " choice; \
+		if [ "$$choice" = "y" ] || [ "$$choice" = "Y" ]; then \
+			$(GOPATH)/bin/$(APP_NAME)$(GOEXE) aumid --deregister || @echo "No AUMID found or error occurred."; \
+		else \
+			echo "Skipping AUMID deregistration."; \
 		fi
