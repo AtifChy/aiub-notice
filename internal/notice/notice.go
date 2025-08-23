@@ -21,11 +21,12 @@ type Notice struct {
 
 func GetNotices() ([]Notice, error) {
 	var notices []Notice
+	const maxRetries = 5
 
 	rootURL := "https://www.aiub.edu"
 	noticeURL := rootURL + "/category/notices"
 
-	response, err := http.Get(noticeURL)
+	response, err := httpGetWithRetry(noticeURL, maxRetries)
 	if err != nil {
 		return nil, err
 	}
@@ -71,4 +72,22 @@ func GetNotices() ([]Notice, error) {
 	}
 
 	return notices, nil
+}
+
+func httpGetWithRetry(url string, maxRetries int) (*http.Response, error) {
+	var response *http.Response
+	var err error
+
+	for i := range maxRetries {
+		response, err = http.Get(url)
+		if err == nil {
+			return response, nil
+		}
+
+		waitTime := time.Duration((i+1)*2) * time.Second
+		log.Printf("attemp %d failed: %v. Retrying in %s...", i+1, err, waitTime)
+		time.Sleep(waitTime)
+	}
+
+	return nil, fmt.Errorf("failed after %d attempts: %w", maxRetries, err)
 }
