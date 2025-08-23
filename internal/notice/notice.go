@@ -9,6 +9,8 @@ import (
 	"strings"
 	"time"
 
+	_ "time/tzdata"
+
 	"github.com/PuerkitoBio/goquery"
 )
 
@@ -50,7 +52,10 @@ func GetNotices() ([]Notice, error) {
 		re := regexp.MustCompile(`[\s\n]+`)
 		dateStr = re.ReplaceAllString(dateStr, " ")
 
-		loc, _ := time.LoadLocation("Asia/Dhaka")
+		loc, err := time.LoadLocation("Asia/Dhaka")
+		if err != nil {
+			log.Fatalf("Error: loading location: %v", err)
+		}
 		date, err := time.ParseInLocation("2 Jan 2006", dateStr, loc)
 		if err != nil {
 			log.Printf("Error: parsing date '%s': %v", dateStr, err)
