@@ -52,8 +52,8 @@ dev:
 
 ## build: Build the application (production mode)
 build:
-	$(GOBUILD) -ldflags="$(LDFLAGS)" -o $(BUILD_DIR)/$(APP_NAME)$(GOEXE) $(APP_SRC)
-	$(GOBUILD) -ldflags="$(LDFLAGS) -H=windowsgui" -o $(BUILD_DIR)/$(LAUNCHER_NAME)$(GOEXE) $(LAUNCHER_SRC)
+	$(GOBUILD) -trimpath -ldflags="$(LDFLAGS)" -o $(BUILD_DIR)/$(APP_NAME)$(GOEXE) $(APP_SRC)
+	$(GOBUILD) -trimpath -ldflags="$(LDFLAGS) -H=windowsgui" -o $(BUILD_DIR)/$(LAUNCHER_NAME)$(GOEXE) $(LAUNCHER_SRC)
 
 ## test: Run tests
 test:
@@ -66,8 +66,8 @@ deps:
 
 ## install: Install the application
 install:
-	$(GOINSTALL) -ldflags="$(LDFLAGS)" $(APP_SRC)
-	$(GOINSTALL) -ldflags="$(LDFLAGS) -H=windowsgui" $(LAUNCHER_SRC)
+	$(GOINSTALL) -trimpath -ldflags="$(LDFLAGS)" $(APP_SRC)
+	$(GOINSTALL) -trimpath -ldflags="$(LDFLAGS) -H=windowsgui" $(LAUNCHER_SRC)
 	@echo ""
 	@echo "Installation complete!"
 	@echo "Binaries installed to: $(GOPATH)/bin"
