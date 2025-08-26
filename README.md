@@ -8,7 +8,7 @@ and notifying users about new notices from the AIUB website.
 ![Windows Toast Notification Example](https://github.com/user-attachments/assets/411999be-0da6-4a23-9fd3-15bd97c7b44f)
 
 ```text
-$./aiub-notice.exe --help
+$ aiub-notice.exe --help
 AIUB Notice Notifier is a command-line tool that fetches and
 displays notices from AIUB's official website.
 
@@ -42,22 +42,23 @@ Use "aiub-notice [command] --help" for more information about a command.
 ## Requirements
 
 - Windows 10/11
-- GNU make (for build automation)
 - Go 1.25 or later
+- GNU make
+- Git
 
 ## Installation
 
 ### Install dependencies
 
 ```sh
-scoop install make go
+scoop install make go git
 ```
 
 **Note:** If you don't have [Scoop](https://scoop.sh/) installed,
 please follow the instructions on their website to install it.
 Or you can install Go and Make manually.
 
-### Build the project
+### Steps
 
 1. Clone this repository:
 
@@ -66,19 +67,34 @@ Or you can install Go and Make manually.
     cd aiub-notice
     ```
 
-2. Build the project:
+2. Install the project:
 
     ```sh
-    make build
+    make install-all
     ```
 
-3. Install the project:
+3. Restart (or Sign out) your computer to ensure that autostart works correctly.
 
-    ```sh
-    make install
-    ```
+4. Profit!
 
 ## Usage
+
+### Start the Service
+
+```sh
+aiub-notice start
+```
+
+- Use `--interval` or `-i` to set the custom check interval (default: 30m).
+
+### Show Last Notice
+
+```sh
+aiub-notice last
+```
+
+**Note:** This command will show the last fetched notice,
+or an error if no notices have been fetched yet.
 
 ### Register
 
@@ -86,41 +102,24 @@ To register the program and ensure that toast notifications display
 the correct icon and name, run the following command once:
 
 ```sh
-./aiub-notice aumid --register
+aiub-notice aumid --register
 ```
 
 **Note:** Registration is recommended before using other features.
 
-### Start the Service
-
-```sh
-./aiub-notice start
-```
-
-- Use `--interval` or `-i` to set the check interval (default: 30m).
-
-### Show Last Notice
-
-```sh
-./aiub-notice last
-```
-
-**Note:** This command will show the last fetched notice,
-or an error if no notices have been fetched yet.
-
 ### Manage Autostart (Windows)
 
 ```sh
-./aiub-notice autostart --enable   # Enable autostart
-./aiub-notice autostart --disable  # Disable autostart
-./aiub-notice autostart --status   # Show autostart status
+aiub-notice autostart --enable   # Enable autostart
+aiub-notice autostart --disable  # Disable autostart
+aiub-notice autostart --status   # Show autostart status
 ```
 
 ## Project Structure
 
 - `cmd/` — Entrypoints for CLI applications and subcommands
   - `aiub-notice/` — Main CLI application
-  - `aiub-notice-launcher/` — (If present) Launcher utility
+  - `aiub-notice-launcher/` — Launcher utility
 - `internal/service/` — Main service logic: periodic checks, notifications
 - `internal/notice/` — Notice fetching, parsing, caching, and seen notice tracking
 - `internal/toast/` — Windows Toast notification logic and icon handling
