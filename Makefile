@@ -28,7 +28,14 @@ LAUNCHER_SRC=$(CURDIR)/cmd/$(LAUNCHER_NAME)
 # Build directory
 BUILD_DIR=$(CURDIR)/bin
 
-.PHONY: all build clean deps dev help install test uninstall
+# path separator
+ifeq ($(OS), Windows_NT)
+	SEP = \\
+else
+	SEP = /
+endif
+
+.PHONY: all build clean deps dev help install install-all test uninstall uninstall-all
 
 ## help: Show this help message
 help:
@@ -64,17 +71,45 @@ deps:
 	$(GOMOD) tidy
 	$(GOGET) -u ./...
 
+## install-all: Install the application and optionally enable autostart and register AUMID
+install-all: install _autostart_enable _aumid_register
+	@echo ""
+	@echo "All setup complete!"
+
 ## install: Install the application
 install:
 	$(GOINSTALL) -trimpath -ldflags="$(LDFLAGS)" $(APP_SRC)
 	$(GOINSTALL) -trimpath -ldflags="$(LDFLAGS) -H=windowsgui" $(LAUNCHER_SRC)
 	@echo ""
 	@echo "Installation complete!"
-	@echo "Binaries installed to: $(GOPATH)/bin"
-	@echo "Add $(GOPATH)/bin to your system PATH if not already done."
+	@echo "Binaries installed to: $(GOPATH)$(SEP)bin"
+	@echo "Add $(GOPATH)$(SEP)bin to your system PATH if not already done."
+
+# autostart enable helper
+_autostart_enable:
+	@read -p "Do you want to enable autostart? [recommended] (y/n): " choice; \
+		if [ "$$choice" = "y" ] || [ "$$choice" = "Y" ]; then \
+			$(GOPATH)/bin/$(APP_NAME)$(GOEXE) autostart --enable || @echo "Failed to enable autostart."; \
+		else \
+			echo "Skipping autostart enable."; \
+		fi
+
+# aumid register helper
+_aumid_register:
+	@read -p "Do you want to register AUMID? (y/n): " choice; \
+		if [ "$$choice" = "y" ] || [ "$$choice" = "Y" ]; then \
+			$(GOPATH)/bin/$(APP_NAME)$(GOEXE) aumid --register || @echo "Failed to register AUMID."; \
+		else \
+			echo "Skipping AUMID registration."; \
+		fi
+
+## uninstall-all: Uninstall the application and optionally disable autostart and deregister AUMID
+uninstall-all: uninstall _autostart_disable _aumid_deregister
+	@echo ""
+	@echo "Uninstallation complete!"
 
 ## uninstall: Uninstall the application
-uninstall: _autostart_disable _aumid_deregister
+uninstall:
 	@read -p "Are you sure you want to uninstall $(APP_NAME)? (y/n): " confirm; \
 		if [ "$$confirm" = "y" ] || [ "$$confirm" = "Y" ]; then \
 			echo "Uninstalling $(APP_NAME)..."; \
@@ -82,7 +117,6 @@ uninstall: _autostart_disable _aumid_deregister
 			echo "Uninstallation cancelled."; \
 			exit 1; \
 		fi
-
 	rm -f $(GOPATH)/bin/$(APP_NAME)$(GOEXE)
 	rm -f $(GOPATH)/bin/$(LAUNCHER_NAME)$(GOEXE)
 
