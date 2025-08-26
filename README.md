@@ -5,11 +5,12 @@ and notifying users about new notices from the AIUB website.
 
 ## Preview
 
-<img width="500" height="287" alt="Screenshot 2025-08-18 224648" src="https://github.com/user-attachments/assets/411999be-0da6-4a23-9fd3-15bd97c7b44f" />
+![Windows Toast Notification Example](https://github.com/user-attachments/assets/411999be-0da6-4a23-9fd3-15bd97c7b44f)
 
 ```text
 $./aiub-notice.exe --help
-AIUB Notice Notifier is a command-line tool that fetches and displays notices from AIUB's official website.
+AIUB Notice Notifier is a command-line tool that fetches and
+displays notices from AIUB's official website.
 
 Usage:
   aiub-notice [command]
@@ -52,35 +53,37 @@ Use "aiub-notice [command] --help" for more information about a command.
 scoop install make go
 ```
 
-**Note:** If you don't have [Scoop](https://scoop.sh/) installed, please follow the instructions on their website to install it.
+**Note:** If you don't have [Scoop](https://scoop.sh/) installed,
+please follow the instructions on their website to install it.
 Or you can install Go and Make manually.
 
 ### Build the project
 
 1. Clone this repository:
 
-```sh
-git clone https://github.com/AtifChy/aiub-notice.git
-cd aiub-notice
-```
+    ```sh
+    git clone https://github.com/AtifChy/aiub-notice.git
+    cd aiub-notice
+    ```
 
 2. Build the project:
 
-```sh
-make build
-```
+    ```sh
+    make build
+    ```
 
 3. Install the project:
 
-```sh
-make install
-```
+    ```sh
+    make install
+    ```
 
 ## Usage
 
 ### Register
 
-To register the program and ensure that toast notifications display the correct icon and name, run the following command once:
+To register the program and ensure that toast notifications display
+the correct icon and name, run the following command once:
 
 ```sh
 ./aiub-notice aumid --register
@@ -102,7 +105,8 @@ To register the program and ensure that toast notifications display the correct 
 ./aiub-notice last
 ```
 
-**Note:** This command will show the last fetched notice, or an error if no notices have been fetched yet.
+**Note:** This command will show the last fetched notice,
+or an error if no notices have been fetched yet.
 
 ### Manage Autostart (Windows)
 
@@ -117,16 +121,12 @@ To register the program and ensure that toast notifications display the correct 
 - `cmd/` — Entrypoints for CLI applications and subcommands
   - `aiub-notice/` — Main CLI application
   - `aiub-notice-launcher/` — (If present) Launcher utility
-- `internal/service/` — Main service logic: periodic checks, notifications, service loop
+- `internal/service/` — Main service logic: periodic checks, notifications
 - `internal/notice/` — Notice fetching, parsing, caching, and seen notice tracking
 - `internal/toast/` — Windows Toast notification logic and icon handling
 - `internal/common/` — Shared constants, paths, and helpers
 - `internal/autostart/` — Windows autostart management
 - `internal/aumid/` — AUMID registration for Windows notifications
-
-Other files:
-
-- `README.md`, `LICENSE`, `Makefile`, etc. — Project documentation and build scripts
 
 ## Contributing
 
