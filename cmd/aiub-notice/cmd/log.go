@@ -19,12 +19,12 @@ var logCmd = &cobra.Command{
 		logPath := common.GetLogPath()
 
 		if clear, _ := cmd.Flags().GetBool("clear"); clear {
-			logFile, err := common.GetLogFile()
-			if err != nil {
+			err := os.Truncate(logPath, 0)
+			if err != nil && !os.IsNotExist(err) {
 				log.Fatalf("Error clearing log file: %v", err)
+			} else {
+				fmt.Println("Log file cleared.")
 			}
-			logFile.Close()
-			fmt.Println("Log file cleared.")
 			return
 		}
 
