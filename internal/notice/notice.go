@@ -90,7 +90,7 @@ func httpGetWithRetry(url string, maxRetries int) (*http.Response, error) {
 		}
 
 		waitTime := time.Duration((i+1)*2) * time.Second
-		log.Printf("attemp %d failed: %v. Retrying in %s...", i+1, err, waitTime)
+		log.Printf("Attempt %d failed: %v. Retrying in %s...", i+1, err, waitTime)
 		time.Sleep(waitTime)
 	}
 
