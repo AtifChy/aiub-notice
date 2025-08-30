@@ -15,19 +15,32 @@ func GetDataPath() (string, error) {
 	return filepath.Join(cacheDir, AppName), nil
 }
 
-func GetLogPath() string {
+var GetLogPath = func() string {
 	return filepath.Join(os.TempDir(), AppName+".log")
 }
 
 // GetLogFile returns a file handle for the application's log file.
 func GetLogFile() (*os.File, error) {
+	const logSize = 5 * 1024 * 1024 // 5 MB
+	logPath := GetLogPath()
+
+	info, err := os.Stat(logPath)
+	if err == nil && info.Size() > logSize {
+		if err := os.Truncate(logPath, 0); err != nil {
+			return nil, err
+		}
+	} else if err != nil && !os.IsNotExist(err) {
+		return nil, err
+	}
+
 	logFile, err := os.OpenFile(
-		GetLogPath(),
+		logPath,
 		os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644,
 	)
 	if err != nil {
 		return nil, err
 	}
+
 	return logFile, nil
 }
 
