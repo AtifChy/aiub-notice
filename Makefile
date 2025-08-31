@@ -3,7 +3,7 @@ GOCMD=go
 GOBUILD=$(GOCMD) build
 GOINSTALL=$(GOCMD) install
 GOCLEAN=$(GOCMD) clean
-GOTEST=$(GOCMD) test
+GOTEST=$(GOCMD) test -v
 GOGET=$(GOCMD) get
 GOMOD=$(GOCMD) mod
 GOENV=$(GOCMD) env
@@ -83,7 +83,10 @@ install:
 	@echo ""
 	@echo "Installation complete!"
 	@echo "Binaries installed to: $(GOPATH)$(SEP)bin"
+	@echo ""
 	@echo "Add $(GOPATH)$(SEP)bin to your system PATH if not already done."
+	@echo "Run the following command in PowerShell to add it to your user path:"
+	@echo '[Environment]::SetEnvironmentVariable("PATH", "$$env:PATH;$(GOPATH)$(SEP)bin", [EnvironmentVariableTarget]::User)'
 
 # autostart enable helper
 _autostart_enable:
