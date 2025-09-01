@@ -9,6 +9,10 @@ import (
 )
 
 func Register(aumid, displayName, iconPath string) error {
+	if iconPath != "" && !filepath.IsAbs(iconPath) {
+		return fmt.Errorf("iconPath must be an absolute path: %s", iconPath)
+	}
+
 	regPath := fmt.Sprintf(`SOFTWARE\Classes\AppUserModelId\%s`, aumid)
 
 	key, _, err := registry.CreateKey(registry.CURRENT_USER, regPath, registry.SET_VALUE)
@@ -22,13 +26,11 @@ func Register(aumid, displayName, iconPath string) error {
 	}
 
 	if iconPath != "" {
-		if !filepath.IsAbs(iconPath) {
-			return fmt.Errorf("iconPath must be an absolute path: %s", iconPath)
-		}
 		if err := key.SetStringValue("IconUri", iconPath); err != nil {
 			return fmt.Errorf("failed to set IconUri for %s: %w", aumid, err)
 		}
 	} else {
+		// when iconPath is empty, remove any existing IconUri value
 		_ = key.DeleteValue("IconUri")
 	}
 
