@@ -7,8 +7,11 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strconv"
+	"strings"
 	"time"
 
+	"github.com/AtifChy/aiub-notice/internal/common"
 	"github.com/AtifChy/aiub-notice/internal/notice"
 	"github.com/AtifChy/aiub-notice/internal/toast"
 )
@@ -102,4 +105,29 @@ func checkNotice(aumid string, seenNotices map[string]struct{}) error {
 	}
 
 	return nil
+}
+
+func GetProcessFromLock() (*os.Process, error) {
+	lockPath, err := common.GetLockPath()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get lock file path: %w", err)
+	}
+
+	data, err := os.ReadFile(lockPath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read lock file: %w", err)
+	}
+
+	pidStr := strings.TrimSpace(string(data))
+	pid, err := strconv.Atoi(pidStr)
+	if err != nil {
+		return nil, fmt.Errorf("invalid PID in lock file: %w", err)
+	}
+
+	proc, err := os.FindProcess(pid)
+	if err != nil {
+		return nil, fmt.Errorf("failed to find process with PID %d: %w", pid, err)
+	}
+
+	return proc, nil
 }
