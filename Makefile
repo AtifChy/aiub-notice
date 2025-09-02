@@ -75,18 +75,18 @@ deps:
 install-all: install _autostart_enable _aumid_register
 	@echo ""
 	@echo "All setup complete!"
-
-## install: Install the application
-install:
-	$(GOINSTALL) -trimpath -ldflags="$(LDFLAGS)" $(APP_SRC)
-	$(GOINSTALL) -trimpath -ldflags="$(LDFLAGS) -H=windowsgui" $(LAUNCHER_SRC)
 	@echo ""
 	@echo "Installation complete!"
 	@echo "Binaries installed to: $(GOPATH)$(SEP)bin"
 	@echo ""
 	@echo "Add $(GOPATH)$(SEP)bin to your system PATH if not already done."
 	@echo "Run the following command in PowerShell to add it to your user path:"
-	@echo '[Environment]::SetEnvironmentVariable("PATH", "$$env:PATH;$(GOPATH)$(SEP)bin", [EnvironmentVariableTarget]::User)'
+	@echo "[Environment]::SetEnvironmentVariable(\"PATH\", \"\$$env:PATH;$(GOPATH)$(SEP)bin\", [EnvironmentVariableTarget]::User)"
+
+## install: Install the application
+install:
+	$(GOINSTALL) -trimpath -ldflags="$(LDFLAGS)" $(APP_SRC)
+	$(GOINSTALL) -trimpath -ldflags="$(LDFLAGS) -H=windowsgui" $(LAUNCHER_SRC)
 
 # autostart enable helper
 _autostart_enable:
