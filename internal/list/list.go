@@ -33,8 +33,11 @@ type Model struct {
 
 func NewModel() Model {
 	columns := []table.Column{
-		table.NewFlexColumn(columnKeyTitle, "Title", 6).WithFiltered(true),
-		table.NewFlexColumn(columnKeyDate, "Date", 2),
+		table.NewFlexColumn(columnKeyTitle, "Title", 6).
+			WithStyle(lipgloss.NewStyle().Align(lipgloss.Left)).
+			WithFiltered(true),
+		table.NewFlexColumn(columnKeyDate, "Date", 2).
+			WithStyle(lipgloss.NewStyle().Align(lipgloss.Center)),
 	}
 	rows := getRows()
 
@@ -52,20 +55,11 @@ func NewModel() Model {
 			BorderRounded().
 			WithBaseStyle(baseStyle).
 			HeaderStyle(headerStyle).
-			WithRowStyleFunc(rowStyle).
 			WithRows(rows),
 		help:  help.New(),
 		keys:  km,
 		width: 90,
 	}
-}
-
-func rowStyle(row table.RowStyleFuncInput) lipgloss.Style {
-	style := lipgloss.NewStyle().Align(lipgloss.Center)
-	if !row.IsHighlighted {
-		return style
-	}
-	return style.Background(lipgloss.Color("#334"))
 }
 
 func getRows() []table.Row {
@@ -137,6 +131,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case key.Matches(msg, m.keys.Quit):
 			if !m.table.GetIsFilterInputFocused() {
 				cmds = append(cmds, tea.Quit)
+				fmt.Println()
 			}
 		}
 	}

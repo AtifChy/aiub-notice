@@ -18,7 +18,8 @@ func (k KeyMap) ShortHelp() []key.Binding {
 
 func (k KeyMap) FullHelp() [][]key.Binding {
 	return [][]key.Binding{
-		{k.RowDown, k.RowUp, k.RowSelectToggle, k.RowOpen},
+		{k.RowDown, k.RowUp},
+		{k.RowSelectToggle, k.RowOpen},
 		// {k.PageDown, k.PageUp, k.PageFirst, k.PageLast},
 		{k.Filter, k.FilterBlur, k.FilterClear},
 		// {k.ScrollLeft, k.ScrollRight},
