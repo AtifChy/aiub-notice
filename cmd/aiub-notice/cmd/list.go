@@ -1,23 +1,23 @@
 package cmd
 
 import (
-	"fmt"
+	"log"
 
+	"github.com/AtifChy/aiub-notice/internal/list"
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
 )
 
 // listCmd represents the list command
 var listCmd = &cobra.Command{
 	Use:   "list",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "List all fetched notices",
+	Long:  `Display all fetched notices in an interactive table that allows navigation and opening notices.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("list called")
+		p := tea.NewProgram(list.NewModel())
+		if _, err := p.Run(); err != nil {
+			log.Fatalf("Error running program: %v", err)
+		}
 	},
 }
 
