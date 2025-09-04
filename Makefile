@@ -54,13 +54,13 @@ clean:
 
 ## dev: Build the application (development mode)
 dev:
-	$(GOBUILD) -o $(BUILD_DIR)/$(APP_NAME)$(GOEXE) $(APP_SRC)
-	$(GOBUILD) -ldflags="-H=windowsgui" -o $(BUILD_DIR)/$(LAUNCHER_NAME)$(GOEXE) $(LAUNCHER_SRC)
+	$(GOBUILD) -o $(BUILD_DIR)/debug/$(APP_NAME)$(GOEXE) $(APP_SRC)
+	$(GOBUILD) -ldflags="-H=windowsgui" -o $(BUILD_DIR)/debug/$(LAUNCHER_NAME)$(GOEXE) $(LAUNCHER_SRC)
 
 ## build: Build the application (production mode)
 build:
-	$(GOBUILD) -trimpath -ldflags="$(LDFLAGS)" -o $(BUILD_DIR)/$(APP_NAME)$(GOEXE) $(APP_SRC)
-	$(GOBUILD) -trimpath -ldflags="$(LDFLAGS) -H=windowsgui" -o $(BUILD_DIR)/$(LAUNCHER_NAME)$(GOEXE) $(LAUNCHER_SRC)
+	$(GOBUILD) -trimpath -ldflags="$(LDFLAGS)" -o $(BUILD_DIR)/release/$(APP_NAME)$(GOEXE) $(APP_SRC)
+	$(GOBUILD) -trimpath -ldflags="$(LDFLAGS) -H=windowsgui" -o $(BUILD_DIR)/release/$(LAUNCHER_NAME)$(GOEXE) $(LAUNCHER_SRC)
 
 ## test: Run tests
 test:
