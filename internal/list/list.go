@@ -3,6 +3,7 @@ package list
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
@@ -72,15 +73,31 @@ func getRows() []table.Row {
 	var rows []table.Row
 
 	for _, n := range notices {
-		tableRow := table.NewRow(table.RowData{
+		row := table.NewRow(table.RowData{
 			columnKeyTitle: n.Title,
 			columnKeyDate:  n.Date.Format("02 Jan 2006"),
 			columnKeyLink:  n.Link,
 		})
-		rows = append(rows, tableRow)
+
+		for word, style := range keywordStyles {
+			if strings.Contains(strings.ToLower(n.Title), word) {
+				row = row.WithStyle(style)
+				break
+			}
+		}
+
+		rows = append(rows, row)
 	}
 
 	return rows
+}
+
+var keywordStyles = map[string]lipgloss.Style{
+	"exam":         lipgloss.NewStyle().Foreground(lipgloss.Color("1")).Bold(true),
+	"registration": lipgloss.NewStyle().Foreground(lipgloss.Color("4")),
+	"payment":      lipgloss.NewStyle().Foreground(lipgloss.Color("3")),
+	"make up":      lipgloss.NewStyle().Foreground(lipgloss.Color("5")),
+	"holiday":      lipgloss.NewStyle().Foreground(lipgloss.Color("2")),
 }
 
 func (m Model) Init() tea.Cmd {
