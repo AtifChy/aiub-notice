@@ -25,6 +25,12 @@ var (
 	headerStyle = lipgloss.NewStyle().Align(lipgloss.Center).Bold(true).Foreground(lipgloss.Color("6"))
 )
 
+var (
+	helpKeyStyle       = lipgloss.NewStyle().Foreground(lipgloss.Color("#6e738d"))
+	helpDescStyle      = lipgloss.NewStyle().Foreground(lipgloss.Color("#5b6078"))
+	helpSeparatorStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#494d64"))
+)
+
 type Model struct {
 	table table.Model
 	keys  KeyMap
@@ -44,6 +50,17 @@ func NewModel() Model {
 
 	km := DefaultKeyMap()
 
+	hm := help.New()
+	hm.Styles = help.Styles{
+		ShortKey:       helpKeyStyle,
+		ShortDesc:      helpDescStyle,
+		ShortSeparator: helpSeparatorStyle,
+		FullKey:        helpKeyStyle,
+		FullDesc:       helpDescStyle,
+		FullSeparator:  helpSeparatorStyle,
+		Ellipsis:       helpSeparatorStyle,
+	}
+
 	return Model{
 		table: table.
 			New(columns).
@@ -57,7 +74,7 @@ func NewModel() Model {
 			WithBaseStyle(baseStyle).
 			HeaderStyle(headerStyle).
 			WithRows(rows),
-		help:  help.New(),
+		help:  hm,
 		keys:  km,
 		width: 90,
 	}
