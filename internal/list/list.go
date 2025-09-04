@@ -115,16 +115,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		width := msg.Width
+		width := min(msg.Width, m.width)
 		height := msg.Height
-
-		if width > m.width {
-			width = m.width
-		}
-
-		m.help.Width = m.width
-
-		m.table = m.table.WithTargetWidth(width).WithPageSize(height - 5) // adjust rows to fit height
+		m.help.Width = width
+		m.table = m.table.
+			WithTargetWidth(width).
+			WithPageSize(height - 5)
 	case tea.KeyMsg:
 		switch {
 		case key.Matches(msg, m.keys.RowOpen):
