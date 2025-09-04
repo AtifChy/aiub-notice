@@ -20,24 +20,26 @@ func (k KeyMap) FullHelp() [][]key.Binding {
 	return [][]key.Binding{
 		{k.RowDown, k.RowUp},
 		{k.RowSelectToggle, k.RowOpen},
-		// {k.PageDown, k.PageUp, k.PageFirst, k.PageLast},
 		{k.Filter, k.FilterBlur, k.FilterClear},
-		// {k.ScrollLeft, k.ScrollRight},
 		{k.Help, k.Quit},
 	}
 }
 
 func DefaultKeyMap() KeyMap {
 	km := table.DefaultKeyMap()
-	// km.RowSelectToggle = key.NewBinding(
-	// 	key.WithKeys(" "),
-	// 	key.WithHelp("space", "select row"),
-	// )
+	km.RowSelectToggle = key.NewBinding(
+		key.WithKeys(" "),
+		key.WithHelp("space", "select"),
+	)
+	km.FilterBlur = key.NewBinding(
+		key.WithKeys("esc"),
+		key.WithHelp("esc", "unfocus"),
+	)
 	return KeyMap{
 		KeyMap: km,
 		RowOpen: key.NewBinding(
-			key.WithKeys("o"),
-			key.WithHelp("o", "open"),
+			key.WithKeys("enter"),
+			key.WithHelp("enter", "open"),
 		),
 		Help: key.NewBinding(
 			key.WithKeys("?"),

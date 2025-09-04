@@ -139,7 +139,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					}
 				}
 			}
-			m.table = m.table.WithAllRowsDeselected()
+			// Reset filter and selection after opening
+			m.table = m.table.
+				WithFilterInputValue("").
+				WithAllRowsDeselected()
 		case key.Matches(msg, m.keys.Help):
 			m.help.ShowAll = !m.help.ShowAll
 		case key.Matches(msg, m.keys.Quit):
