@@ -18,14 +18,18 @@ Usage:
 Available Commands:
   aumid       Manage AUMID registration for Windows notifications
   autostart   Manage autostart settings for AIUB Notice Fetcher service
+  close       Close the AIUB Notice Fetcher service
   completion  Generate the autocompletion script for the specified shell
   help        Help about any command
   last        Display the last fetched notice
+  list        List all fetched notices
   log         View the log of notices
   start       Start the AIUB Notice Fetcher service
+  status      Check the status of the AIUB Notice Fetcher service
 
 Flags:
-  -h, --help   help for aiub-notice
+  -h, --help      help for aiub-notice
+  -v, --version   version for aiub-notice
 
 Use "aiub-notice [command] --help" for more information about a command.
 ```
@@ -120,12 +124,13 @@ aiub-notice autostart --status   # Show autostart status
 - `cmd/` — Entrypoints for CLI applications and subcommands
   - `aiub-notice/` — Main CLI application
   - `aiub-notice-launcher/` — Launcher utility
-- `internal/service/` — Main service logic: periodic checks, notifications
-- `internal/notice/` — Notice fetching, parsing, caching, and seen notice tracking
-- `internal/toast/` — Windows Toast notification logic and icon handling
-- `internal/common/` — Shared constants, paths, and helpers
-- `internal/autostart/` — Windows autostart management
 - `internal/aumid/` — AUMID registration for Windows notifications
+- `internal/autostart/` — Windows autostart management
+- `internal/common/` — Shared constants, paths, and helpers
+- `internal/list/` — Notice List TUI
+- `internal/notice/` — Notice fetching, parsing, caching, and seen notice tracking
+- `internal/service/` — Main service logic: periodic checks, notifications
+- `internal/toast/` — Windows Toast notification logic and icon handling
 
 ## Contributing
 
