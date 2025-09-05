@@ -16,8 +16,25 @@ import (
 var lastCmd = &cobra.Command{
 	Use:   "last",
 	Short: "Display the last fetched notice",
-	Long:  `This command retrieves and displays the last fetched notice from the AIUB Notice Fetcher service.`,
+	Long: `This command retrieves and displays the last fetched notice from the AIUB Notice Fetcher service.
+Examples:
+	# trigger toast for the last fetched notice
+	aiub-notice last
+	
+	# trigger toast for multiple notices, e.g., last 1st, 3rd, and 5th notices
+	aiub-notice last -n 1,3,5
+`,
 	Run: func(cmd *cobra.Command, args []string) {
+		nums, err := cmd.Flags().GetIntSlice("num")
+		if err != nil {
+			fmt.Println("Error parsing num flag:", err)
+		}
+
+		numsMap := make(map[int]struct{})
+		for _, n := range nums {
+			numsMap[n] = struct{}{}
+		}
+
 		seen, err := notice.LoadSeenNotices()
 		if err != nil {
 			log.Fatalf("Error loading seen notices: %v", err)
@@ -36,18 +53,24 @@ var lastCmd = &cobra.Command{
 			return notices[i].Date.After(notices[j].Date)
 		})
 
-		for _, n := range notices {
+		if len(notices) == 0 {
+			fmt.Println("No new notices found.")
+			return
+		}
+
+		for idx, n := range notices {
+			if _, ok := numsMap[idx+1]; !ok {
+				continue
+			}
 			if _, ok := seen[n.Link]; ok {
 				toast.Show(common.AUMID, n)
 				fmt.Println("Triggered toast for:", n.Title)
-				return
 			}
 		}
-
-		fmt.Println("No new notices found.")
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(lastCmd)
+	lastCmd.Flags().IntSliceP("num", "n", []int{1}, "Number(s) of last notices to display")
 }
