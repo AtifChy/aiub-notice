@@ -65,9 +65,7 @@ func NewModel() Model {
 		table: table.
 			New(columns).
 			Filtered(true).
-			WithFuzzyFilter().
 			Focused(true).
-			WithPageSize(10).
 			SelectableRows(true).
 			WithKeyMap(km.KeyMap).
 			BorderRounded().
@@ -127,9 +125,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		cmds []tea.Cmd
 	)
 
-	m.table, cmd = m.table.Update(msg)
-	cmds = append(cmds, cmd)
-
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		width := min(msg.Width, m.width)
@@ -169,6 +164,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		}
 	}
+
+	m.table, cmd = m.table.Update(msg)
+	cmds = append(cmds, cmd)
 
 	return m, tea.Batch(cmds...)
 }

@@ -31,10 +31,6 @@ func DefaultKeyMap() KeyMap {
 		key.WithKeys(" "),
 		key.WithHelp("space", "select"),
 	)
-	km.FilterBlur = key.NewBinding(
-		key.WithKeys("esc"),
-		key.WithHelp("esc", "unfocus"),
-	)
 	return KeyMap{
 		KeyMap: km,
 		RowOpen: key.NewBinding(
