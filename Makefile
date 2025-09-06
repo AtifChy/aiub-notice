@@ -68,8 +68,8 @@ test:
 
 ## deps: Update dependencies
 deps:
-	$(GOMOD) tidy
 	$(GOGET) -u ./...
+	$(GOMOD) tidy
 
 ## install-all: Install the application and optionally enable autostart and register AUMID
 install-all: install _autostart_enable _aumid_register

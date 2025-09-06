@@ -6,10 +6,10 @@ require (
 	github.com/PuerkitoBio/goquery v1.10.3
 	github.com/allan-simon/go-singleinstance v0.0.0-20210120080615-d0997106ab37
 	github.com/charmbracelet/bubbles v0.21.0
-	github.com/charmbracelet/bubbletea v1.3.6
+	github.com/charmbracelet/bubbletea v1.3.7
 	github.com/charmbracelet/lipgloss v1.1.0
 	github.com/electricbubble/go-toast v0.3.0
-	github.com/evertras/bubble-table v0.19.0
+	github.com/evertras/bubble-table v0.19.2
 	github.com/jxeng/shortcut v1.0.2
 	github.com/spf13/cobra v1.10.1
 	golang.org/x/sys v0.35.0
@@ -39,6 +39,5 @@ require (
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect
 	golang.org/x/net v0.43.0 // indirect
-	golang.org/x/sync v0.16.0 // indirect
 	golang.org/x/text v0.28.0 // indirect
 )
