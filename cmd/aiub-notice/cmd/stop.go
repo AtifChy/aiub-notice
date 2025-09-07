@@ -9,10 +9,11 @@ import (
 	"github.com/AtifChy/aiub-notice/internal/service"
 )
 
-var closeCmd = &cobra.Command{
-	Use:   "close",
-	Short: "Close the AIUB Notice Fetcher service",
-	Long:  `This command closes the AIUB Notice Fetcher service.`,
+var stopCmd = &cobra.Command{
+	Use:     "stop",
+	Aliases: []string{"close"},
+	Short:   "stop the AIUB Notice Fetcher service",
+	Long:    `This command stops the AIUB Notice Fetcher service.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		proc, err := service.GetProcessFromLock()
 		if err != nil {
@@ -27,10 +28,10 @@ var closeCmd = &cobra.Command{
 			fmt.Println("Error sending interrupt signal:", err)
 			return
 		}
-		fmt.Println("Service closed successfully.")
+		fmt.Println("Service stopped successfully.")
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(closeCmd)
+	rootCmd.AddCommand(stopCmd)
 }

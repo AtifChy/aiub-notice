@@ -16,9 +16,10 @@ import (
 
 // startCmd represents the start command
 var startCmd = &cobra.Command{
-	Use:   "start",
-	Short: "Start the AIUB Notice Fetcher service",
-	Long:  `Start the AIUB Notice Fetcher service to fetch and display notices from the AIUB website.`,
+	Use:     "start",
+	Aliases: []string{"run"},
+	Short:   "Start the AIUB Notice Fetcher service",
+	Long:    `Start the AIUB Notice Fetcher service to fetch and display notices from the AIUB website.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		quiet, _ := cmd.Flags().GetBool("quiet")
 		if quiet {

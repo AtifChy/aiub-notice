@@ -10,9 +10,10 @@ import (
 
 // listCmd represents the list command
 var listCmd = &cobra.Command{
-	Use:   "list",
-	Short: "List all fetched notices",
-	Long:  `Display all fetched notices in an interactive table that allows navigation and opening notices.`,
+	Use:     "list",
+	Aliases: []string{"ls", "show"},
+	Short:   "List all fetched notices",
+	Long:    `Display all fetched notices in an interactive table that allows navigation and opening notices.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		p := tea.NewProgram(list.NewModel())
 		if _, err := p.Run(); err != nil {

@@ -14,8 +14,9 @@ import (
 
 // lastCmd represents the last command
 var lastCmd = &cobra.Command{
-	Use:   "last",
-	Short: "Display the last fetched notice",
+	Use:     "last",
+	Aliases: []string{"recent"},
+	Short:   "Display the last fetched notice",
 	Long: `This command retrieves and displays the last fetched notice from the AIUB Notice Fetcher service.
 Examples:
 	# trigger toast for the last fetched notice

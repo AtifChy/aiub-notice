@@ -13,8 +13,9 @@ import (
 
 // aumidCmd represents the aumid command
 var aumidCmd = &cobra.Command{
-	Use:   "aumid",
-	Short: "Manage AUMID registration for Windows notifications",
+	Use:     "aumid",
+	Aliases: []string{"appid"},
+	Short:   "Manage AUMID registration for Windows notifications",
 	Long: `The aumid command allows you to register or deregister the application
 AppUserModelID (AUMID) in the Windows registry. This is necessary for sending
 toast notifications on Windows.

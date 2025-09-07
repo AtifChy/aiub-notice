@@ -12,9 +12,10 @@ import (
 
 // autostartCmd represents the autostart command
 var autostartCmd = &cobra.Command{
-	Use:   "autostart",
-	Short: "Manage autostart settings for AIUB Notice Fetcher service",
-	Long:  `This command allows you to enable or disable autostart for the AIUB Notice Fetcher service on Windows systems.`,
+	Use:     "autostart",
+	Aliases: []string{"startup"},
+	Short:   "Manage autostart settings for AIUB Notice Fetcher service",
+	Long:    `This command allows you to enable or disable autostart for the AIUB Notice Fetcher service on Windows systems.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if enable, _ := cmd.Flags().GetBool("enable"); enable {
 			interval, err := cmd.Flags().GetDuration("interval")
