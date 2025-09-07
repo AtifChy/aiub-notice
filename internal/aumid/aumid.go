@@ -1,4 +1,4 @@
-// Package aumid provides functions to register and deregister AppUserModelIDs (AUMIDs) in the Windows registry.
+// Package aumid provides functions to register and unregister AppUserModelIDs (AUMIDs) in the Windows registry.
 package aumid
 
 import (
@@ -37,7 +37,7 @@ func Register(aumid, displayName, iconPath string) error {
 	return nil
 }
 
-func Deregister(aumid string) error {
+func Unregister(aumid string) error {
 	regPath := fmt.Sprintf(`SOFTWARE\Classes\AppUserModelId\%s`, aumid)
 
 	err := registry.DeleteKey(registry.CURRENT_USER, regPath)

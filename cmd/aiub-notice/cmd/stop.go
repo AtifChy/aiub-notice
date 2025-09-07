@@ -9,6 +9,7 @@ import (
 	"github.com/AtifChy/aiub-notice/internal/service"
 )
 
+// stopCmd represents the stop command
 var stopCmd = &cobra.Command{
 	Use:     "stop",
 	Aliases: []string{"close"},

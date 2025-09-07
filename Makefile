@@ -106,8 +106,8 @@ _aumid_register:
 			echo "Skipping AUMID registration."; \
 		fi
 
-## uninstall-all: Uninstall the application and optionally disable autostart and deregister AUMID
-uninstall-all: uninstall _autostart_disable _aumid_deregister
+## uninstall-all: Uninstall the application and optionally disable autostart and unregister AUMID
+uninstall-all: uninstall _autostart_disable _aumid_unregister
 	@echo ""
 	@echo "Uninstallation complete!"
 
@@ -132,11 +132,11 @@ _autostart_disable:
 			echo "Skipping autostart entry removal."; \
 		fi
 
-# aumid deregister helper
-_aumid_deregister:
-	@read -p "Deregister AUMID if exists? (y/n): " choice; \
+# aumid unregister helper
+_aumid_unregister:
+	@read -p "Unregister AUMID if exists? (y/n): " choice; \
 		if [ "$$choice" = "y" ] || [ "$$choice" = "Y" ]; then \
-			$(GOPATH)/bin/$(APP_NAME)$(GOEXE) aumid --deregister || @echo "No AUMID found or error occurred."; \
+			$(GOPATH)/bin/$(APP_NAME)$(GOEXE) aumid --unregister || @echo "No AUMID found or error occurred."; \
 		else \
-			echo "Skipping AUMID deregistration."; \
+			echo "Skipping AUMID unregistration."; \
 		fi

@@ -16,7 +16,7 @@ var aumidCmd = &cobra.Command{
 	Use:     "aumid",
 	Aliases: []string{"appid"},
 	Short:   "Manage AUMID registration for Windows notifications",
-	Long: `The aumid command allows you to register or deregister the application
+	Long: `The aumid command allows you to register or unregister the application
 AppUserModelID (AUMID) in the Windows registry. This is necessary for sending
 toast notifications on Windows.
 
@@ -24,8 +24,8 @@ Examples:
 	# Register the application AUMID
 	aiub-notice aumid --register
 
-	# Deregister the application AUMID
-	aiub-notice aumid --deregister`,
+	# unregister the application AUMID
+	aiub-notice aumid --unregister`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if register, _ := cmd.Flags().GetBool("register"); register {
 			iconURL := "https://www.aiub.edu/Files/Templates/AIUBv3/assets/images/aiub-logo-white-border.svg"
@@ -50,9 +50,9 @@ Examples:
 			}
 
 			log.Printf("Successfully registered AIUB Notice toast application with ID %s", common.AUMID)
-		} else if deregister, _ := cmd.Flags().GetBool("deregister"); deregister {
-			aumid.Deregister(common.AUMID)
-			log.Printf("Successfully deregistered AIUB Notice toast application with ID %s", common.AUMID)
+		} else if unregister, _ := cmd.Flags().GetBool("unregister"); unregister {
+			aumid.Unregister(common.AUMID)
+			log.Printf("Successfully unregistered AIUB Notice toast application with ID %s", common.AUMID)
 		} else {
 			_ = cmd.Help()
 		}
@@ -63,5 +63,5 @@ func init() {
 	rootCmd.AddCommand(aumidCmd)
 
 	aumidCmd.Flags().BoolP("register", "r", false, "Register application AUMID for toast notifications")
-	aumidCmd.Flags().BoolP("deregister", "d", false, "Deregister application AUMID for toast notifications")
+	aumidCmd.Flags().BoolP("unregister", "d", false, "Unregister application AUMID for toast notifications")
 }
