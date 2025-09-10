@@ -11,6 +11,7 @@ import (
 	"github.com/AtifChy/aiub-notice/internal/common"
 )
 
+// logCmd represents the log command
 var logCmd = &cobra.Command{
 	Use:   "log",
 	Short: "View the log of notices",

@@ -3,9 +3,10 @@ package cmd
 import (
 	"log"
 
-	"github.com/AtifChy/aiub-notice/internal/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
+
+	"github.com/AtifChy/aiub-notice/internal/list"
 )
 
 // listCmd represents the list command

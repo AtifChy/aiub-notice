@@ -21,8 +21,9 @@ const (
 )
 
 var (
-	baseStyle   = lipgloss.NewStyle().BorderForeground(lipgloss.Color("0"))
-	headerStyle = lipgloss.NewStyle().Align(lipgloss.Center).Bold(true).Foreground(lipgloss.Color("6"))
+	baseStyle      = lipgloss.NewStyle().BorderForeground(lipgloss.Color("#494d64"))
+	headerStyle    = lipgloss.NewStyle().Align(lipgloss.Center).Bold(true).Foreground(lipgloss.Color("6"))
+	highlightStyle = lipgloss.NewStyle().Background(lipgloss.Color("#363a4f"))
 )
 
 var (
@@ -71,6 +72,7 @@ func NewModel() Model {
 			BorderRounded().
 			WithBaseStyle(baseStyle).
 			HeaderStyle(headerStyle).
+			HighlightStyle(highlightStyle).
 			WithRows(rows),
 		help:  hm,
 		keys:  km,
