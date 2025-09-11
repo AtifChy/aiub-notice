@@ -35,7 +35,7 @@ func GetLogFile() (*os.File, error) {
 
 	logFile, err := os.OpenFile(
 		logPath,
-		os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644,
+		os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o644,
 	)
 	if err != nil {
 		return nil, err
@@ -47,7 +47,7 @@ func GetLogFile() (*os.File, error) {
 // GetTempPath returns the path to the temporary directory for the application.
 func GetTempPath() (string, error) {
 	tempDir := filepath.Join(os.TempDir(), AppName)
-	if err := os.MkdirAll(tempDir, 0755); err != nil {
+	if err := os.MkdirAll(tempDir, 0o755); err != nil {
 		return "", fmt.Errorf("failed to create temporary directory: %w", err)
 	}
 	return tempDir, nil
@@ -60,4 +60,14 @@ func GetLockPath() (string, error) {
 		return "", fmt.Errorf("failed to get temporary directory: %w", err)
 	}
 	return filepath.Join(lockDir, AppName+".lock"), nil
+}
+
+// GetIconPath returns the path to the icon file for toast notifications,
+func GetIconPath() (string, error) {
+	dataPath, err := GetDataPath()
+	if err != nil {
+		return "", fmt.Errorf("failed to get data path: %w", err)
+	}
+
+	return ensureIconExists(filepath.Join(dataPath, "aiub-icon.svg"))
 }

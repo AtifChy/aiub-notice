@@ -4,7 +4,8 @@ package common
 const (
 	AppName      = "aiub-notice"
 	LauncherName = AppName + "-launcher"
-	AppID        = "AIUB Notice"
+	AppID        = "org.atifchy." + AppName
+	DisplayName  = "AIUB Notice"
 )
 
 var Version = "dev"

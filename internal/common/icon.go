@@ -1,4 +1,4 @@
-package toast
+package common
 
 import (
 	"fmt"
@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-
-	"github.com/AtifChy/aiub-notice/internal/common"
 )
 
 const iconURL = "https://www.aiub.edu/Files/Templates/AIUBv3/assets/images/aiub-logo-white-border.svg"
@@ -45,16 +43,12 @@ func fetchIcon(url, dest string) error {
 	return nil
 }
 
-func getIconPath() (string, error) {
-	dataPath, err := common.GetDataPath()
+// ensureIconExists checks if the icon file exists at the given path,
+// and downloads it if it does not exist or is empty.
+func ensureIconExists(path string) (string, error) {
+	iconPath, err := filepath.Abs(path)
 	if err != nil {
-		return "", fmt.Errorf("failed to get data path: %w", err)
-	}
-
-	iconPath := filepath.Join(dataPath, "aiub-icon.svg")
-	iconPath, err = filepath.Abs(iconPath)
-	if err != nil {
-		return "", fmt.Errorf("failed to get absolute path for icon: %w", err)
+		return "", fmt.Errorf("failed to get icon absolute path: %w", err)
 	}
 
 	info, err := os.Stat(iconPath)
