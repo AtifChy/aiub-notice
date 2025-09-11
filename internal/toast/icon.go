@@ -5,9 +5,14 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
+
+	"github.com/AtifChy/aiub-notice/internal/common"
 )
 
-func DownloadIcon(url, path string) error {
+const iconURL = "https://www.aiub.edu/Files/Templates/AIUBv3/assets/images/aiub-logo-white-border.svg"
+
+func fetchIcon(url, path string) error {
 	response, err := http.Get(url)
 	if err != nil {
 		return fmt.Errorf("failed to download icon: %w", err)
@@ -30,4 +35,28 @@ func DownloadIcon(url, path string) error {
 	}
 
 	return nil
+}
+
+func getIconPath() (string, error) {
+	dataPath, err := common.GetDataPath()
+	if err != nil {
+		return "", fmt.Errorf("failed to get data path: %w", err)
+	}
+
+	iconPath := filepath.Join(dataPath, "aiub-icon.svg")
+	iconPath, err = filepath.Abs(iconPath)
+	if err != nil {
+		return "", fmt.Errorf("failed to get absolute path for icon: %w", err)
+	}
+
+	if _, err := os.Stat(iconPath); err != nil {
+		if os.IsNotExist(err) {
+			err = fetchIcon(iconURL, iconPath)
+			if err != nil {
+				return "", fmt.Errorf("failed to download icon: %w", err)
+			}
+		}
+	}
+
+	return iconPath, nil
 }

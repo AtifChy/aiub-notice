@@ -47,7 +47,7 @@ var startCmd = &cobra.Command{
 		}
 
 		log.Println("Single instance lock acquired.")
-		service.Run(common.AUMID, checkInterval)
+		service.Run(checkInterval)
 		log.Println("Service stopped. Exiting.")
 	},
 }

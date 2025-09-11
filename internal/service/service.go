@@ -17,7 +17,7 @@ import (
 )
 
 // Run starts the notice checking service.
-func Run(aumid string, checkInterval time.Duration) {
+func Run(checkInterval time.Duration) {
 	log.Println("Starting initial notice check...")
 
 	// Load previously seen notices
@@ -28,7 +28,7 @@ func Run(aumid string, checkInterval time.Duration) {
 	}
 
 	// Perform initial check for notices
-	if err = checkNotice(aumid, seenNotices); err != nil {
+	if err = checkNotice(seenNotices); err != nil {
 		log.Printf("Error during initial notice check: %v", err)
 	}
 
@@ -50,7 +50,7 @@ func Run(aumid string, checkInterval time.Duration) {
 		select {
 		case <-ticker.C:
 			log.Println("Checking for new notices...")
-			if err := checkNotice(aumid, seenNotices); err != nil {
+			if err := checkNotice(seenNotices); err != nil {
 				log.Printf("Error checking for new notices: %v", err)
 			}
 
@@ -61,7 +61,7 @@ func Run(aumid string, checkInterval time.Duration) {
 	}
 }
 
-func checkNotice(aumid string, seenNotices map[string]struct{}) error {
+func checkNotice(seenNotices map[string]struct{}) error {
 	notices, err := notice.GetNotices()
 	if err != nil {
 		return fmt.Errorf("failed to fetch notices: %w", err)
@@ -85,11 +85,12 @@ func checkNotice(aumid string, seenNotices map[string]struct{}) error {
 
 		if _, err = os.Stat(path); err == nil {
 			for _, n := range newNotices {
-				err := toast.Show(aumid, n)
+				err := toast.Show(n)
 				if err != nil {
 					log.Printf("Error showing toast notification for notice %s: %v", n.Title, err)
+				} else {
+					log.Printf("Sent notification for notice: '%s'", n.Title)
 				}
-				log.Printf("Sent notification for notice: '%s'", n.Title)
 			}
 		} else if os.IsNotExist(err) {
 			log.Println("Seen notices file does not exist, skipping notifications.")

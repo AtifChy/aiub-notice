@@ -7,7 +7,6 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/AtifChy/aiub-notice/internal/common"
 	"github.com/AtifChy/aiub-notice/internal/notice"
 	"github.com/AtifChy/aiub-notice/internal/toast"
 )
@@ -64,7 +63,7 @@ Examples:
 				continue
 			}
 			if _, ok := seen[n.Link]; ok {
-				toast.Show(common.AUMID, n)
+				toast.Show(n)
 				fmt.Println("Triggered toast for:", n.Title)
 			}
 		}

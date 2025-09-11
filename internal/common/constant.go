@@ -1,10 +1,10 @@
 // Package common provides utility functions for handling file paths
 package common
 
-var (
+const (
 	AppName      = "aiub-notice"
 	LauncherName = AppName + "-launcher"
-	AUMID        = "atifchy." + AppName
+	AppID        = "AIUB Notice"
 )
 
 var Version = "dev"
