@@ -9,44 +9,44 @@ import (
 	"github.com/AtifChy/aiub-notice/internal/common"
 )
 
-func getNoticesCachePath() (string, error) {
+func getCachedNoticesPath() (string, error) {
 	path, err := common.GetDataPath()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("get data path: %w", err)
 	}
 	return filepath.Join(path, "notices.json"), nil
 }
 
-func saveNoticesCache(notices []Notice) error {
-	path, err := getNoticesCachePath()
+func storeCachedNotices(notices []Notice) error {
+	path, err := getCachedNoticesPath()
 	if err != nil {
-		return fmt.Errorf("failed to get cache file path: %w", err)
+		return fmt.Errorf("get cache path: %w", err)
 	}
 
 	file, err := os.Create(path)
 	if err != nil {
-		return fmt.Errorf("failed to create cache file: %w", err)
+		return fmt.Errorf("create cache file: %w", err)
 	}
 	defer file.Close()
 
 	return json.NewEncoder(file).Encode(notices)
 }
 
-func LoadNoticesCache() ([]Notice, error) {
-	path, err := getNoticesCachePath()
+func GetCachedNotices() ([]Notice, error) {
+	path, err := getCachedNoticesPath()
 	if err != nil {
-		return nil, fmt.Errorf("failed to get cache file path: %w", err)
+		return nil, fmt.Errorf("get cache path: %w", err)
 	}
 
 	file, err := os.Open(path)
 	if err != nil {
-		return nil, fmt.Errorf("failed to open cache file: %w", err)
+		return nil, fmt.Errorf("open cache file: %w", err)
 	}
 	defer file.Close()
 
 	var notices []Notice
 	if err := json.NewDecoder(file).Decode(&notices); err != nil {
-		return nil, fmt.Errorf("failed to decode cache file: %w", err)
+		return nil, fmt.Errorf("decode cache file: %w", err)
 	}
 
 	return notices, nil
@@ -64,7 +64,7 @@ func GetSeenNoticesPath() (string, error) {
 func LoadSeenNotices() (map[string]struct{}, error) {
 	path, err := GetSeenNoticesPath()
 	if err != nil {
-		return nil, fmt.Errorf("failed to get seen notices file path: %w", err)
+		return nil, fmt.Errorf("get seen notices file path: %w", err)
 	}
 	file, err := os.Open(path)
 	if os.IsNotExist(err) {
@@ -86,7 +86,7 @@ func LoadSeenNotices() (map[string]struct{}, error) {
 func SaveSeenNotices(seen map[string]struct{}) error {
 	path, err := GetSeenNoticesPath()
 	if err != nil {
-		return fmt.Errorf("failed to get seen notices file path: %w", err)
+		return fmt.Errorf("get seen notices file path: %w", err)
 	}
 	file, err := os.Create(path)
 	if err != nil {

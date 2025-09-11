@@ -72,7 +72,7 @@ func GetNotices() ([]Notice, error) {
 		})
 	})
 
-	if err := saveNoticesCache(notices); err != nil {
+	if err := storeCachedNotices(notices); err != nil {
 		log.Printf("Error: failed to cache notices: %v", err)
 	}
 

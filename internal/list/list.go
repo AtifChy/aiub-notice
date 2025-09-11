@@ -81,7 +81,7 @@ func NewModel() Model {
 }
 
 func getRows() []table.Row {
-	notices, err := notice.LoadNoticesCache()
+	notices, err := notice.GetCachedNotices()
 	if err != nil {
 		fmt.Println("Error loading notices from cache:", err)
 		return []table.Row{}

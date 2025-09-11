@@ -44,7 +44,7 @@ Examples:
 			return
 		}
 
-		notices, err := notice.LoadNoticesCache()
+		notices, err := notice.GetCachedNotices()
 		if err != nil {
 			log.Fatalf("Error fetching notices: %v", err)
 		}
