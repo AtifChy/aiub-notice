@@ -71,8 +71,8 @@ deps:
 	$(GOGET) -u ./...
 	$(GOMOD) tidy
 
-## install-all: Install the application and optionally enable autostart and register AUMID
-install-all: install _autostart_enable _aumid_register
+## install-all: Install the application and optionally enable autostart and register AppID
+install-all: install _autostart_enable _appid_register
 	@echo ""
 	@echo "All setup complete!"
 	@echo ""
@@ -97,17 +97,17 @@ _autostart_enable:
 			echo "Skipping autostart enable."; \
 		fi
 
-# aumid register helper
-_aumid_register:
-	@read -p "Do you want to register AUMID? (y/n): " choice; \
+# appid register helper
+_appid_register:
+	@read -p "Do you want to register AppID? (y/n): " choice; \
 		if [ "$$choice" = "y" ] || [ "$$choice" = "Y" ]; then \
-			$(GOPATH)/bin/$(APP_NAME)$(GOEXE) aumid --register || @echo "Failed to register AUMID."; \
+			$(GOPATH)/bin/$(APP_NAME)$(GOEXE) appid --register || @echo "Failed to register AppID."; \
 		else \
-			echo "Skipping AUMID registration."; \
+			echo "Skipping AppID registration."; \
 		fi
 
-## uninstall-all: Uninstall the application and optionally disable autostart and unregister AUMID
-uninstall-all: uninstall _autostart_disable _aumid_unregister
+## uninstall-all: Uninstall the application and optionally disable autostart and unregister AppID
+uninstall-all: uninstall _autostart_disable _appid_unregister
 	@echo ""
 	@echo "Uninstallation complete!"
 
@@ -132,11 +132,11 @@ _autostart_disable:
 			echo "Skipping autostart entry removal."; \
 		fi
 
-# aumid unregister helper
-_aumid_unregister:
-	@read -p "Unregister AUMID if exists? (y/n): " choice; \
+# appid unregister helper
+_appid_unregister:
+	@read -p "Unregister AppID if exists? (y/n): " choice; \
 		if [ "$$choice" = "y" ] || [ "$$choice" = "Y" ]; then \
-			$(GOPATH)/bin/$(APP_NAME)$(GOEXE) aumid --unregister || @echo "No AUMID found or error occurred."; \
+			$(GOPATH)/bin/$(APP_NAME)$(GOEXE) appid --unregister || @echo "No AppID found or error occurred."; \
 		else \
-			echo "Skipping AUMID unregistration."; \
+			echo "Skipping AppID unregistration."; \
 		fi

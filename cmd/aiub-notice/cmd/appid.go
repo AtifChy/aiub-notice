@@ -9,13 +9,13 @@ import (
 	"github.com/AtifChy/aiub-notice/internal/common"
 )
 
-// appidCmd represents the aumid command
+// appidCmd represents the appid command
 var appidCmd = &cobra.Command{
 	Use:     "appid",
 	Aliases: []string{"aumid"},
-	Short:   "Manage appid registration for Windows notifications",
+	Short:   "Manage AppID registration for Windows notifications",
 	Long: `The appid command allows you to register or unregister the application
-AppUserModelID (appid) in the Windows registry. This is necessary for sending
+AppUserModelID (AUMID) in the Windows registry. This is necessary for sending
 toast notifications on Windows.
 
 Examples:
@@ -46,6 +46,6 @@ Examples:
 func init() {
 	rootCmd.AddCommand(appidCmd)
 
-	appidCmd.Flags().BoolP("register", "r", false, "Register application AUMID for toast notifications")
-	appidCmd.Flags().BoolP("unregister", "d", false, "Unregister application AUMID for toast notifications")
+	appidCmd.Flags().BoolP("register", "r", false, "Register application AppID for toast notifications")
+	appidCmd.Flags().BoolP("unregister", "d", false, "Unregister application AppID for toast notifications")
 }

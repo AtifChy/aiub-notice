@@ -16,7 +16,7 @@ Usage:
   aiub-notice [command]
 
 Available Commands:
-  aumid       Manage AUMID registration for Windows notifications
+  appid       Manage AppID registration for Windows notifications
   autostart   Manage autostart settings for AIUB Notice Fetcher service
   close       Close the AIUB Notice Fetcher service
   completion  Generate the autocompletion script for the specified shell
@@ -66,16 +66,16 @@ Or you can install Go and Make manually.
 
 1. Clone this repository:
 
-    ```sh
-    git clone https://github.com/AtifChy/aiub-notice.git
-    cd aiub-notice
-    ```
+   ```sh
+   git clone https://github.com/AtifChy/aiub-notice.git
+   cd aiub-notice
+   ```
 
 2. Install the project:
 
-    ```sh
-    make install-all
-    ```
+   ```sh
+   make install-all
+   ```
 
 3. Restart (or Sign out) your computer to ensure that autostart works correctly.
 
@@ -106,7 +106,7 @@ To register the program and ensure that toast notifications display
 the correct icon and name, run the following command once:
 
 ```sh
-aiub-notice aumid --register
+aiub-notice appid --register
 ```
 
 **Note:** Registration is recommended before using other features.
@@ -124,7 +124,7 @@ aiub-notice autostart --status   # Show autostart status
 - `cmd/` — Entrypoints for CLI applications and subcommands
   - `aiub-notice/` — Main CLI application
   - `aiub-notice-launcher/` — Launcher utility
-- `internal/aumid/` — AUMID registration for Windows notifications
+- `internal/appid/` — AppID registration for Windows notifications
 - `internal/autostart/` — Windows autostart management
 - `internal/common/` — Shared constants, paths, and helpers
 - `internal/list/` — Notice List TUI
