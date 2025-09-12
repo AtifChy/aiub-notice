@@ -1,8 +1,6 @@
-// Package logger provides logging functionalities for the application.
 package logger
 
 import (
-	"context"
 	"fmt"
 	"io"
 	"log/slog"
@@ -22,10 +20,10 @@ type PrettyHandler struct {
 	opts PrettyHandlerOptions
 }
 
-func (h *PrettyHandler) Handle(ctx context.Context, r slog.Record) error {
-	level := r.Level.String() + ":"
+func (h *PrettyHandler) handle(record slog.Record) error {
+	level := record.Level.String() + ":"
 
-	switch r.Level {
+	switch record.Level {
 	case slog.LevelDebug:
 		level = color.MagentaString(level)
 	case slog.LevelInfo:
@@ -37,7 +35,7 @@ func (h *PrettyHandler) Handle(ctx context.Context, r slog.Record) error {
 	}
 
 	var attrs []string
-	r.Attrs(func(a slog.Attr) bool {
+	record.Attrs(func(a slog.Attr) bool {
 		value := fmt.Sprintf("%v", a.Value.Any())
 		if strings.ContainsAny(value, " \t") {
 			value = fmt.Sprintf("%q", value)
@@ -47,16 +45,16 @@ func (h *PrettyHandler) Handle(ctx context.Context, r slog.Record) error {
 	})
 
 	var sourceStr string
-	if h.opts.AddSource && r.PC != 0 {
-		source := r.Source()
+	if h.opts.AddSource && record.PC != 0 {
+		source := record.Source()
 		dir := path.Base(path.Dir(source.File))
 		file := path.Base(source.File)
 		sourceStr = fmt.Sprintf("%s/%s:%d", dir, file, source.Line)
 	}
 
-	timeStr := r.Time.Local().Format(time.DateTime)
+	timeStr := record.Time.Local().Format(time.DateTime)
 	timeStr = color.HiBlackString("[%s]", timeStr)
-	msg := color.New(color.Bold).Sprint(r.Message)
+	msg := color.New(color.Bold).Sprint(record.Message)
 
 	parts := []string{timeStr, level}
 	if sourceStr != "" {

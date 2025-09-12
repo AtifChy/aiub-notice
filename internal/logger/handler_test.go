@@ -2,7 +2,6 @@ package logger
 
 import (
 	"bytes"
-	"context"
 	"io"
 	"log/slog"
 	"os"
@@ -53,10 +52,10 @@ func newHandlerNoSource() *PrettyHandler {
 func TestPrettyHandler_InfoWithAttrs(t *testing.T) {
 	h := newHandlerNoSource()
 
-	r := slog.NewRecord(time.Date(2023, 5, 6, 7, 8, 9, 0, time.UTC), slog.LevelInfo, "hello world", 0)
-	r.AddAttrs(slog.Int("a", 1), slog.String("b", "two words"))
+	record := slog.NewRecord(time.Now(), slog.LevelInfo, "hello world", 0)
+	record.AddAttrs(slog.Int("a", 1), slog.String("b", "two words"))
 
-	out := captureStdout(t, func() { _ = h.Handle(context.Background(), r) })
+	out := captureStdout(t, func() { _ = h.handle(record) })
 	got := normalizeOutput(out)
 	want := `INFO: hello world a=1 b="two words"`
 	if got != want {
@@ -77,8 +76,8 @@ func TestPrettyHandler_Levels(t *testing.T) {
 
 	h := newHandlerNoSource()
 	for _, tt := range tests {
-		r := slog.NewRecord(time.Unix(0, 0), tt.lvl, "msg", 0)
-		out := captureStdout(t, func() { _ = h.Handle(context.Background(), r) })
+		record := slog.NewRecord(time.Unix(0, 0), tt.lvl, "msg", 0)
+		out := captureStdout(t, func() { _ = h.handle(record) })
 		got := normalizeOutput(out)
 		if got != tt.want {
 			t.Fatalf("level %v: got %q, want %q", tt.lvl, got, tt.want)
@@ -88,8 +87,8 @@ func TestPrettyHandler_Levels(t *testing.T) {
 
 func TestPrettyHandler_NoAttrsNoExtraSpaces(t *testing.T) {
 	h := newHandlerNoSource()
-	r := slog.NewRecord(time.Unix(0, 0), slog.LevelInfo, "msg", 0)
-	out := captureStdout(t, func() { _ = h.Handle(context.Background(), r) })
+	record := slog.NewRecord(time.Unix(0, 0), slog.LevelInfo, "msg", 0)
+	out := captureStdout(t, func() { _ = h.handle(record) })
 	got := normalizeOutput(out)
 	want := "INFO: msg"
 	if got != want {
