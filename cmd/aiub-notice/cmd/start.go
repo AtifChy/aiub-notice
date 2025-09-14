@@ -1,9 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-	"io"
-	"log"
 	"os"
 	"time"
 
@@ -11,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/AtifChy/aiub-notice/internal/common"
+	"github.com/AtifChy/aiub-notice/internal/logger"
 	"github.com/AtifChy/aiub-notice/internal/service"
 )
 
@@ -20,36 +18,7 @@ var startCmd = &cobra.Command{
 	Aliases: []string{"run"},
 	Short:   "Start the AIUB Notice Fetcher service",
 	Long:    `Start the AIUB Notice Fetcher service to fetch and display notices from the AIUB website.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		quiet, _ := cmd.Flags().GetBool("quiet")
-		if quiet {
-			null, _ := os.OpenFile(os.DevNull, os.O_WRONLY, 0)
-			os.Stdout = null
-			os.Stderr = null
-		}
-
-		logFile, err := setupLogging(quiet)
-		if err != nil {
-			log.Fatalf("Error setting up logging: %v", err)
-		}
-		defer logFile.Close()
-
-		lock, err := acquireLock()
-		if err != nil {
-			log.Println("Another instance is already running. Exiting.")
-			return
-		}
-		defer lock.Close()
-
-		checkInterval, err := cmd.Flags().GetDuration("interval")
-		if err != nil {
-			log.Fatalf("Error parsing interval flag: %v", err)
-		}
-
-		log.Println("Single instance lock acquired.")
-		service.Run(checkInterval)
-		log.Println("Service stopped. Exiting.")
-	},
+	Run:     run,
 }
 
 func init() {
@@ -59,20 +28,40 @@ func init() {
 	startCmd.Flags().Bool("quiet", false, "Suppress console output")
 }
 
-func setupLogging(quiet bool) (*os.File, error) {
-	logFile, err := common.GetLogFile()
-	if err != nil {
-		return nil, fmt.Errorf("failed to open log file: %w", err)
-	}
-
+func run(cmd *cobra.Command, args []string) {
+	quiet, _ := cmd.Flags().GetBool("quiet")
 	if quiet {
-		log.SetOutput(logFile)
-	} else {
-		multiWriter := io.MultiWriter(os.Stdout, logFile)
-		log.SetOutput(multiWriter)
+		null, _ := os.OpenFile(os.DevNull, os.O_WRONLY, 0)
+		os.Stdout = null
+		os.Stderr = null
 	}
 
-	return logFile, nil
+	logfile, err := common.GetLogFile()
+	if err != nil {
+		logger.L().Error("open log file", "error", err)
+		logger.L().Warn("logging to file is disabled.")
+	}
+	if logfile != nil {
+		logger.SetOutputFile(logfile)
+		defer logfile.Close()
+	}
+
+	lock, err := acquireLock()
+	if err != nil {
+		logger.L().Info("another instance is already running, exiting...")
+		return
+	}
+	logger.L().Info("single instance lock acquired.")
+	defer lock.Close()
+
+	checkInterval, err := cmd.Flags().GetDuration("interval")
+	if err != nil {
+		logger.L().Error("parsing interval flag", "error", err)
+		return
+	}
+	service.Run(checkInterval)
+
+	logger.L().Info("service stopped.")
 }
 
 func acquireLock() (*os.File, error) {

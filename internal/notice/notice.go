@@ -3,7 +3,6 @@ package notice
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"regexp"
 	"strings"
@@ -11,6 +10,7 @@ import (
 
 	_ "time/tzdata"
 
+	"github.com/AtifChy/aiub-notice/internal/logger"
 	"github.com/PuerkitoBio/goquery"
 )
 
@@ -54,11 +54,11 @@ func GetNotices() ([]Notice, error) {
 
 		loc, err := time.LoadLocation("Asia/Dhaka")
 		if err != nil {
-			log.Fatalf("Error: loading location: %v", err)
+			logger.L().Error("loading location", "error", err)
 		}
 		date, err := time.ParseInLocation("2 Jan 2006", dateStr, loc)
 		if err != nil {
-			log.Printf("Error: parsing date '%s': %v", dateStr, err)
+			logger.L().Error("parsing date", "error", err, "date", dateStr)
 		}
 
 		link, _ := selection.Find("a").Attr("href")
@@ -73,7 +73,7 @@ func GetNotices() ([]Notice, error) {
 	})
 
 	if err := storeCachedNotices(notices); err != nil {
-		log.Printf("Error: failed to cache notices: %v", err)
+		logger.L().Error("caching notices", "error", err)
 	}
 
 	return notices, nil
@@ -90,7 +90,7 @@ func httpGetWithRetry(url string, maxRetries int) (*http.Response, error) {
 		}
 
 		waitTime := time.Duration((i+1)*2) * time.Second
-		log.Printf("Attempt %d failed: %v. Retrying in %s...", i+1, err, waitTime)
+		logger.L().Warn("HTTP GET attempt failed", "attempt", i+1, "error", err, "wait", waitTime.String())
 		time.Sleep(waitTime)
 	}
 

@@ -1,12 +1,13 @@
 package cmd
 
 import (
-	"log"
+	"os"
 
 	"github.com/spf13/cobra"
 
 	"github.com/AtifChy/aiub-notice/internal/appid"
 	"github.com/AtifChy/aiub-notice/internal/common"
+	"github.com/AtifChy/aiub-notice/internal/logger"
 )
 
 // appidCmd represents the appid command
@@ -28,15 +29,17 @@ Examples:
 		if register, _ := cmd.Flags().GetBool("register"); register {
 			iconPath, err := common.GetIconPath()
 			if err != nil {
-				log.Fatalf("Error getting icon path: %v", err)
+				logger.L().Error("getting icon path", "error", err)
+				os.Exit(1)
 			}
 			if err = appid.Register(common.AppID, common.DisplayName, iconPath); err != nil {
-				log.Fatalf("Error registering toast application: %v", err)
+				logger.L().Error("registering appid", "error", err)
+				os.Exit(1)
 			}
-			log.Printf("Successfully registered AIUB Notice toast application with ID %s", common.AppID)
+			logger.L().Info("successfully registered AIUB Notice toast application", "appid", common.AppID)
 		} else if unregister, _ := cmd.Flags().GetBool("unregister"); unregister {
 			appid.Unregister(common.AppID)
-			log.Printf("Successfully unregistered AIUB Notice toast application with ID %s", common.AppID)
+			logger.L().Info("successfully unregistered AIUB Notice toast application", "appid", common.AppID)
 		} else {
 			_ = cmd.Help()
 		}

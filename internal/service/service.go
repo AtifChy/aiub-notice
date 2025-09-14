@@ -4,7 +4,6 @@ package service
 import (
 	"context"
 	"fmt"
-	"log"
 	"os"
 	"os/signal"
 	"strconv"
@@ -12,24 +11,25 @@ import (
 	"time"
 
 	"github.com/AtifChy/aiub-notice/internal/common"
+	"github.com/AtifChy/aiub-notice/internal/logger"
 	"github.com/AtifChy/aiub-notice/internal/notice"
 	"github.com/AtifChy/aiub-notice/internal/toast"
 )
 
 // Run starts the notice checking service.
 func Run(checkInterval time.Duration) {
-	log.Println("Starting initial notice check...")
+	logger.L().Info("starting initial notice check...")
 
 	// Load previously seen notices
 	seenNotices, err := notice.LoadSeenNotices()
 	if err != nil {
-		log.Printf("Error loading seen notices: %v", err)
+		logger.L().Error("loading seen notices", "error", err)
 		seenNotices = make(map[string]struct{})
 	}
 
 	// Perform initial check for notices
 	if err = checkNotice(seenNotices); err != nil {
-		log.Printf("Error during initial notice check: %v", err)
+		logger.L().Error("initial notice check", "error", err)
 	}
 
 	// Context for graceful shutdown
@@ -43,19 +43,19 @@ func Run(checkInterval time.Duration) {
 	ticker := time.NewTicker(checkInterval)
 	defer ticker.Stop()
 
-	log.Printf("Starting notice check loop with interval: %s", checkInterval)
+	logger.L().Info("service started", "interval", checkInterval.String())
 
 	// Main service loop
 	for {
 		select {
 		case <-ticker.C:
-			log.Println("Checking for new notices...")
+			logger.L().Info("checking for new notices...")
 			if err := checkNotice(seenNotices); err != nil {
-				log.Printf("Error checking for new notices: %v", err)
+				logger.L().Error("checking for new notices", "error", err)
 			}
 
 		case <-ctx.Done():
-			log.Println("Received shutdown signal, stopping service...")
+			logger.L().Info("received shutdown signal, stopping service...")
 			return
 		}
 	}
@@ -64,7 +64,7 @@ func Run(checkInterval time.Duration) {
 func checkNotice(seenNotices map[string]struct{}) error {
 	notices, err := notice.GetNotices()
 	if err != nil {
-		return fmt.Errorf("failed to fetch notices: %w", err)
+		return fmt.Errorf("fetch notices: %w", err)
 	}
 
 	var newNotices []notice.Notice
@@ -76,33 +76,33 @@ func checkNotice(seenNotices map[string]struct{}) error {
 	}
 
 	if len(newNotices) > 0 {
-		log.Printf("Found %d new notices. Sending notifications...", len(newNotices))
+		logger.L().Info("found new notices", "count", strconv.Itoa(len(newNotices)))
 
 		path, err := notice.GetSeenNoticesPath()
 		if err != nil {
-			log.Printf("Error getting seen notices path: %v", err)
+			logger.L().Error("getting seen notices path", "error", err)
 		}
 
 		if _, err = os.Stat(path); err == nil {
 			for _, n := range newNotices {
 				err := toast.Show(n)
 				if err != nil {
-					log.Printf("Error showing toast notification for notice %s: %v", n.Title, err)
+					logger.L().Error("showing toast notification", "title", n.Title, "error", err)
 				} else {
-					log.Printf("Sent notification for notice: '%s'", n.Title)
+					logger.L().Info("sent notification for notice", "title", n.Title)
 				}
 			}
 		} else if os.IsNotExist(err) {
-			log.Println("Seen notices file does not exist, skipping notifications.")
+			logger.L().Warn("seen notices file does not exist, skipping notifications")
 		} else {
-			log.Printf("Error checking seen notices file: %v", err)
+			logger.L().Error("checking seen notices file", "error", err)
 		}
 
 		if err := notice.SaveSeenNotices(seenNotices); err != nil {
-			return fmt.Errorf("failed to save seen notices: %w", err)
+			return fmt.Errorf("save seen notices: %w", err)
 		}
 	} else {
-		log.Println("No new notices found.")
+		logger.L().Info("no new notices found.")
 	}
 
 	return nil
@@ -111,12 +111,12 @@ func checkNotice(seenNotices map[string]struct{}) error {
 func GetProcessFromLock() (*os.Process, error) {
 	lockPath, err := common.GetLockPath()
 	if err != nil {
-		return nil, fmt.Errorf("failed to get lock file path: %w", err)
+		return nil, fmt.Errorf("get lock file path: %w", err)
 	}
 
 	data, err := os.ReadFile(lockPath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read lock file: %w", err)
+		return nil, fmt.Errorf("read lock file: %w", err)
 	}
 
 	pidStr := strings.TrimSpace(string(data))
@@ -127,7 +127,7 @@ func GetProcessFromLock() (*os.Process, error) {
 
 	proc, err := os.FindProcess(pid)
 	if err != nil {
-		return nil, fmt.Errorf("failed to find process with PID %d: %w", pid, err)
+		return nil, fmt.Errorf("find process with PID %d: %w", pid, err)
 	}
 
 	return proc, nil
