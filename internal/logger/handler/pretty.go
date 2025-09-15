@@ -5,11 +5,12 @@ import (
 	"encoding/json"
 	"io"
 	"log/slog"
+	"path"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/AtifChy/aiub-notice/internal/common"
 	"github.com/fatih/color"
 )
 
@@ -48,10 +49,13 @@ func (h *PrettyHandler) Handle(_ context.Context, record slog.Record) error {
 	if h.opts.AddSource && record.PC != 0 {
 		source := record.Source()
 
-		idx := strings.Index(source.File, common.AppName)
+		_, b, _, _ := runtime.Caller(0)
+		rootDir := path.Base(path.Join(b, "../../../.."))
+
+		idx := strings.Index(source.File, rootDir)
 		file := source.File
 		if idx != -1 {
-			file = source.File[idx+len(common.AppName)+1:]
+			file = source.File[idx+len(rootDir)+1:]
 		}
 
 		var sb strings.Builder
@@ -81,19 +85,19 @@ func (h *PrettyHandler) Handle(_ context.Context, record slog.Record) error {
 	lineBuilder.WriteByte(' ')
 	levelColor.Fprintf(&lineBuilder, "[%s]", record.Level.String())
 
-	// message
-	lineBuilder.WriteByte(' ')
-	lineBuilder.WriteString(record.Message)
-
 	// source
 	if src != "" {
 		lineBuilder.WriteByte(' ')
 		color.New(color.FgHiBlack).Fprintf(&lineBuilder, "@%s", src)
 	}
 
+	// message
+	lineBuilder.WriteByte(' ')
+	lineBuilder.WriteString(record.Message)
+
 	// attributes
 	if len(attrs) > 0 {
-		lineBuilder.WriteByte(' ')
+		lineBuilder.WriteString(": ")
 		lineBuilder.WriteString(string(attrsJSON))
 	}
 

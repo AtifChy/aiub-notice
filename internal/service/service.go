@@ -47,7 +47,7 @@ func Run(checkInterval time.Duration) {
 	ticker := time.NewTicker(checkInterval)
 	defer ticker.Stop()
 
-	logger.L().Info("service started", "interval", checkInterval.String())
+	logger.L().Info("service started", slog.String("check_interval", checkInterval.String()))
 
 	// Main service loop
 	for {
@@ -55,7 +55,7 @@ func Run(checkInterval time.Duration) {
 		case <-ticker.C:
 			logger.L().Info("checking for new notices...")
 			if err := checkNotice(seenNotices); err != nil {
-				logger.L().Error("checking for new notices", "error", err)
+				logger.L().Error("checking for new notices", slog.String("error", err.Error()))
 			}
 
 		case <-ctx.Done():
@@ -80,26 +80,30 @@ func checkNotice(seenNotices map[string]struct{}) error {
 	}
 
 	if len(newNotices) > 0 {
-		logger.L().Info("found new notices", "count", strconv.Itoa(len(newNotices)))
+		logger.L().Info("found new notices", slog.Int("count", len(newNotices)))
 
 		path, err := notice.GetSeenNoticesPath()
 		if err != nil {
-			logger.L().Error("getting seen notices path", "error", err)
+			logger.L().Error("getting seen notices path", slog.String("error", err.Error()))
 		}
 
 		if _, err = os.Stat(path); err == nil {
 			for _, n := range newNotices {
 				err := toast.Show(n)
 				if err != nil {
-					logger.L().Error("showing toast notification", "title", n.Title, "error", err)
+					logger.L().Error(
+						"showing toast notification",
+						slog.String("title", n.Title),
+						slog.String("error", err.Error()),
+					)
 				} else {
-					logger.L().Info("sent notification for notice", "title", n.Title)
+					logger.L().Info("sent notification for notice", slog.String("title", n.Title))
 				}
 			}
 		} else if os.IsNotExist(err) {
 			logger.L().Warn("seen notices file does not exist, skipping notifications")
 		} else {
-			logger.L().Error("checking seen notices file", "error", err)
+			logger.L().Error("checking seen notices file", slog.String("error", err.Error()))
 		}
 
 		if err := notice.SaveSeenNotices(seenNotices); err != nil {

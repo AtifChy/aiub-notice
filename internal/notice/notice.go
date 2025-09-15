@@ -41,7 +41,7 @@ func GetNotices() ([]Notice, error) {
 
 	document, err := goquery.NewDocumentFromReader(response.Body)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse HTML: %w", err)
+		return nil, fmt.Errorf("parse HTML: %w", err)
 	}
 
 	document.Find("div.notification").Each(func(_ int, selection *goquery.Selection) {
@@ -87,21 +87,30 @@ func httpGetWithRetry(url string, maxRetries int) (*http.Response, error) {
 	var response *http.Response
 	var err error
 
+	client := http.Client{
+		Timeout: 5 * time.Second,
+	}
+
+	_, err = client.Head(url)
+	if err != nil {
+		return nil, fmt.Errorf("connection error: %w", err)
+	}
+
 	for i := range maxRetries {
-		response, err = http.Get(url)
+		response, err = client.Get(url)
 		if err == nil {
 			return response, nil
 		}
 
-		waitTime := time.Duration((i+1)*2) * time.Second
+		waitTime := time.Duration(1<<i) * time.Second
 		logger.L().Warn(
 			"HTTP GET attempt failed",
 			slog.Int("attempt", i+1),
 			slog.String("error", err.Error()),
-			slog.Duration("wait", waitTime),
+			slog.String("wait", waitTime.String()),
 		)
 		time.Sleep(waitTime)
 	}
 
-	return nil, fmt.Errorf("failed after %d attempts: %w", maxRetries, err)
+	return nil, fmt.Errorf("all retries failed: %w", err)
 }
