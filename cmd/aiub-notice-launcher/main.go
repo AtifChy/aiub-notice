@@ -1,23 +1,25 @@
 package main
 
 import (
-	"log"
+	"log/slog"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"syscall"
 
 	"github.com/AtifChy/aiub-notice/internal/common"
+	"github.com/AtifChy/aiub-notice/internal/logger"
 )
 
 func main() {
 	logfile, _ := common.GetLogFile()
 	defer logfile.Close()
-	log.SetOutput(logfile)
+	logger.SetOutputFile(logfile)
 
 	exe, err := os.Executable()
 	if err != nil {
-		log.Fatalf("Failed to get executable path: %v", err)
+		logger.L().Error("getting executable path", slog.String("error", err.Error()))
+		os.Exit(1)
 	}
 
 	dir := filepath.Dir(exe)
@@ -27,6 +29,7 @@ func main() {
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 
 	if err := cmd.Start(); err != nil {
-		log.Fatalf("Failed to start command: %v", err)
+		logger.L().Error("starting command", slog.String("error", err.Error()))
+		os.Exit(1)
 	}
 }

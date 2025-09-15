@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"log/slog"
 	"os"
 	"time"
 
@@ -38,7 +39,7 @@ func run(cmd *cobra.Command, args []string) {
 
 	logfile, err := common.GetLogFile()
 	if err != nil {
-		logger.L().Error("open log file", "error", err)
+		logger.L().Error("open log file", slog.String("error", err.Error()))
 		logger.L().Warn("logging to file is disabled.")
 	}
 	if logfile != nil {
@@ -56,7 +57,7 @@ func run(cmd *cobra.Command, args []string) {
 
 	checkInterval, err := cmd.Flags().GetDuration("interval")
 	if err != nil {
-		logger.L().Error("parsing interval flag", "error", err)
+		logger.L().Error("parsing interval flag", slog.String("error", err.Error()))
 		return
 	}
 	service.Run(checkInterval)

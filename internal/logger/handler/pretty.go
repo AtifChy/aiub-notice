@@ -2,14 +2,14 @@ package handler
 
 import (
 	"context"
-	"fmt"
+	"encoding/json"
 	"io"
 	"log/slog"
-	"path"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/AtifChy/aiub-notice/internal/common"
 	"github.com/fatih/color"
 )
 
@@ -47,48 +47,56 @@ func (h *PrettyHandler) Handle(_ context.Context, record slog.Record) error {
 	var src string
 	if h.opts.AddSource && record.PC != 0 {
 		source := record.Source()
-		dir := path.Base(path.Dir(source.File))
-		file := path.Base(source.File)
+
+		idx := strings.Index(source.File, common.AppName)
+		file := source.File
+		if idx != -1 {
+			file = source.File[idx+len(common.AppName)+1:]
+		}
 
 		var sb strings.Builder
-		sb.WriteString(dir)
-		sb.WriteByte('/')
 		sb.WriteString(file)
 		sb.WriteByte(':')
 		sb.WriteString(strconv.Itoa(source.Line))
 		src = sb.String()
 	}
 
-	var attrsBuilder strings.Builder
+	attrs := make(map[string]any, record.NumAttrs())
 	record.Attrs(func(a slog.Attr) bool {
-		value := fmt.Sprintf("%v", a.Value)
-		if strings.ContainsAny(value, " \t") {
-			value = fmt.Sprintf("%q", value)
-		}
-		if attrsBuilder.Len() > 0 {
-			attrsBuilder.WriteByte(' ')
-		}
-		attrsBuilder.WriteString(a.Key)
-		attrsBuilder.WriteByte('=')
-		attrsBuilder.WriteString(value)
+		attrs[a.Key] = a.Value.Any()
 		return true
 	})
 
+	attrsJSON, err := json.MarshalIndent(attrs, "", "  ")
+	if err != nil {
+		return err
+	}
+
 	var lineBuilder strings.Builder
-	lineBuilder.WriteString(color.New(color.FgHiBlack).Sprint(ts))
-	lineBuilder.WriteString(" [")
-	lineBuilder.WriteString(levelColor.Sprint(record.Level.String()))
-	lineBuilder.WriteString("] ")
+
+	// timestamp
+	lineBuilder.WriteString(color.HiBlackString(ts))
+
+	// level
+	lineBuilder.WriteByte(' ')
+	levelColor.Fprintf(&lineBuilder, "[%s]", record.Level.String())
+
+	// message
+	lineBuilder.WriteByte(' ')
 	lineBuilder.WriteString(record.Message)
-	if attrsBuilder.Len() > 0 {
-		lineBuilder.WriteString(": ")
-		lineBuilder.WriteString(attrsBuilder.String())
-	}
+
+	// source
 	if src != "" {
-		lineBuilder.WriteString(" (")
-		lineBuilder.WriteString(color.New(color.FgHiBlack).Sprint(src))
-		lineBuilder.WriteByte(')')
+		lineBuilder.WriteByte(' ')
+		color.New(color.FgHiBlack).Fprintf(&lineBuilder, "@%s", src)
 	}
+
+	// attributes
+	if len(attrs) > 0 {
+		lineBuilder.WriteByte(' ')
+		lineBuilder.WriteString(string(attrsJSON))
+	}
+
 	lineBuilder.WriteByte('\n')
 
 	_, _ = io.WriteString(h.w, lineBuilder.String())

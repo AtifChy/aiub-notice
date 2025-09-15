@@ -3,6 +3,7 @@ package notice
 
 import (
 	"fmt"
+	"log/slog"
 	"net/http"
 	"regexp"
 	"strings"
@@ -54,11 +55,14 @@ func GetNotices() ([]Notice, error) {
 
 		loc, err := time.LoadLocation("Asia/Dhaka")
 		if err != nil {
-			logger.L().Error("loading location", "error", err)
+			logger.L().Error("loading location", slog.String("error", err.Error()))
 		}
 		date, err := time.ParseInLocation("2 Jan 2006", dateStr, loc)
 		if err != nil {
-			logger.L().Error("parsing date", "error", err, "date", dateStr)
+			logger.L().Warn("parsing date",
+				slog.String("date", dateStr),
+				slog.String("error", err.Error()),
+			)
 		}
 
 		link, _ := selection.Find("a").Attr("href")
@@ -73,7 +77,7 @@ func GetNotices() ([]Notice, error) {
 	})
 
 	if err := storeCachedNotices(notices); err != nil {
-		logger.L().Error("caching notices", "error", err)
+		logger.L().Error("caching notices", slog.String("error", err.Error()))
 	}
 
 	return notices, nil
@@ -90,7 +94,12 @@ func httpGetWithRetry(url string, maxRetries int) (*http.Response, error) {
 		}
 
 		waitTime := time.Duration((i+1)*2) * time.Second
-		logger.L().Warn("HTTP GET attempt failed", "attempt", i+1, "error", err, "wait", waitTime.String())
+		logger.L().Warn(
+			"HTTP GET attempt failed",
+			slog.Int("attempt", i+1),
+			slog.String("error", err.Error()),
+			slog.Duration("wait", waitTime),
+		)
 		time.Sleep(waitTime)
 	}
 

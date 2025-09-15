@@ -4,6 +4,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"os"
 	"os/signal"
 	"strconv"
@@ -23,13 +24,16 @@ func Run(checkInterval time.Duration) {
 	// Load previously seen notices
 	seenNotices, err := notice.LoadSeenNotices()
 	if err != nil {
-		logger.L().Error("loading seen notices", "error", err)
+		logger.L().Error("loading seen notices", slog.String("error", err.Error()))
 		seenNotices = make(map[string]struct{})
 	}
 
 	// Perform initial check for notices
 	if err = checkNotice(seenNotices); err != nil {
-		logger.L().Error("initial notice check", "error", err)
+		logger.L().Error(
+			"initial notice check",
+			slog.String("error", err.Error()),
+		)
 	}
 
 	// Context for graceful shutdown
