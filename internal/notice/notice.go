@@ -91,11 +91,6 @@ func httpGetWithRetry(url string, maxRetries int) (*http.Response, error) {
 		Timeout: 5 * time.Second,
 	}
 
-	_, err = client.Head(url)
-	if err != nil {
-		return nil, fmt.Errorf("connection error: %w", err)
-	}
-
 	for i := range maxRetries {
 		response, err = client.Get(url)
 		if err == nil {
