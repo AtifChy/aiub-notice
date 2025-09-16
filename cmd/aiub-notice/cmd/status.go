@@ -20,7 +20,10 @@ var statusCmd = &cobra.Command{
 		if proc != nil {
 			isRunning = true
 		}
-		fmt.Printf("AIUB Notice Fetcher service is currently %s.\n", map[bool]string{true: "running", false: "not running"}[isRunning])
+		fmt.Printf(
+			"AIUB Notice Fetcher service is currently %s.\n",
+			map[bool]string{true: "running", false: "not running"}[isRunning],
+		)
 	},
 }
 

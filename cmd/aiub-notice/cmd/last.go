@@ -1,12 +1,13 @@
 package cmd
 
 import (
-	"fmt"
-	"log"
+	"log/slog"
+	"os"
 	"sort"
 
 	"github.com/spf13/cobra"
 
+	"github.com/AtifChy/aiub-notice/internal/logger"
 	"github.com/AtifChy/aiub-notice/internal/notice"
 	"github.com/AtifChy/aiub-notice/internal/toast"
 )
@@ -27,7 +28,8 @@ Examples:
 	Run: func(cmd *cobra.Command, args []string) {
 		nums, err := cmd.Flags().GetIntSlice("num")
 		if err != nil {
-			fmt.Println("Error parsing num flag:", err)
+			logger.L().Error("parsing num flag", slog.String("error", err.Error()))
+			os.Exit(1)
 		}
 
 		numsMap := make(map[int]struct{})
@@ -37,16 +39,18 @@ Examples:
 
 		seen, err := notice.LoadSeenNotices()
 		if err != nil {
-			log.Fatalf("Error loading seen notices: %v", err)
+			logger.L().Error("loading seen notices", slog.String("error", err.Error()))
+			os.Exit(1)
 		}
 		if len(seen) == 0 {
-			fmt.Println("No notices have been fetched yet.")
+			logger.L().Warn("no notices have been fetched yet")
 			return
 		}
 
 		notices, err := notice.GetCachedNotices()
 		if err != nil {
-			log.Fatalf("Error fetching notices: %v", err)
+			logger.L().Error("fetching cached notices", slog.String("error", err.Error()))
+			os.Exit(1)
 		}
 
 		sort.Slice(notices, func(i int, j int) bool {
@@ -54,7 +58,7 @@ Examples:
 		})
 
 		if len(notices) == 0 {
-			fmt.Println("No new notices found.")
+			logger.L().Warn("no new notices found")
 			return
 		}
 
@@ -64,7 +68,7 @@ Examples:
 			}
 			if _, ok := seen[n.Link]; ok {
 				toast.Show(n)
-				fmt.Println("Triggered toast for:", n.Title)
+				logger.L().Info("triggered toast for notice", slog.String("title", n.Title), slog.String("link", n.Link))
 			}
 		}
 	},

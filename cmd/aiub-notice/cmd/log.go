@@ -3,12 +3,13 @@ package cmd
 import (
 	"fmt"
 	"io"
-	"log"
+	"log/slog"
 	"os"
 
 	"github.com/spf13/cobra"
 
 	"github.com/AtifChy/aiub-notice/internal/common"
+	"github.com/AtifChy/aiub-notice/internal/logger"
 )
 
 // logCmd represents the log command
@@ -22,9 +23,10 @@ var logCmd = &cobra.Command{
 		if clear, _ := cmd.Flags().GetBool("clear"); clear {
 			err := os.Truncate(logPath, 0)
 			if err != nil && !os.IsNotExist(err) {
-				log.Fatalf("Error clearing log file: %v", err)
+				logger.L().Error("clearing log file", slog.String("error", err.Error()))
+				os.Exit(1)
 			} else {
-				fmt.Println("Log file cleared.")
+				logger.L().Info("log file cleared")
 			}
 			return
 		}
@@ -34,13 +36,14 @@ var logCmd = &cobra.Command{
 			fmt.Println("No log file found. Please run the service first to generate logs.")
 			os.Exit(0)
 		} else if err != nil {
-			log.Fatalf("Error opening log file: %v", err)
+			logger.L().Error("opening log file", slog.String("error", err.Error()))
 		}
 		defer logFile.Close()
 
 		fmt.Printf("--- Displaying logs from %s ---\n", logPath)
 		if _, err := io.Copy(os.Stdout, logFile); err != nil {
-			log.Fatalf("Error reading log file: %v", err)
+			logger.L().Error("reading log file", slog.String("error", err.Error()))
+			os.Exit(1)
 		}
 	},
 }

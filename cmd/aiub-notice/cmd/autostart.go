@@ -2,12 +2,14 @@ package cmd
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
+	"os"
 	"time"
 
 	"github.com/spf13/cobra"
 
 	"github.com/AtifChy/aiub-notice/internal/autostart"
+	"github.com/AtifChy/aiub-notice/internal/logger"
 )
 
 // autostartCmd represents the autostart command
@@ -20,26 +22,30 @@ var autostartCmd = &cobra.Command{
 		if enable, _ := cmd.Flags().GetBool("enable"); enable {
 			interval, err := cmd.Flags().GetDuration("interval")
 			if err != nil {
-				log.Fatalf("Error parsing interval flag: %v", err)
+				logger.L().Error("parsing interval flag", slog.String("error", err.Error()))
+				os.Exit(1)
 			}
 
 			err = autostart.EnableAutostart(interval)
 			if err != nil {
-				log.Fatalf("Error enabling autostart: %v", err)
+				logger.L().Error("enabling autostart", slog.String("error", err.Error()))
+				os.Exit(1)
 			}
 
-			fmt.Println("Autostart enabled for AIUB Notice Fetcher service.")
+			logger.L().Info("Autostart enabled for AIUB Notice Fetcher service.")
 		} else if disable, _ := cmd.Flags().GetBool("disable"); disable {
 			err := autostart.DisableAutostart()
 			if err != nil {
-				log.Fatalf("Error disabling autostart: %v", err)
+				logger.L().Error("disabling autostart", slog.String("error", err.Error()))
+				os.Exit(1)
 			}
 
-			fmt.Println("Autostart disabled for AIUB Notice Fetcher service.")
+			logger.L().Info("Autostart disabled for AIUB Notice Fetcher service.")
 		} else if status, _ := cmd.Flags().GetBool("status"); status {
 			enabled, err := autostart.IsAutostartEnabled()
 			if err != nil {
-				log.Fatalf("Error checking autostart status: %v", err)
+				logger.L().Error("checking autostart status", slog.String("error", err.Error()))
+				os.Exit(1)
 			}
 
 			fmt.Printf("Autostart is currently %s.\n", map[bool]string{true: "enabled", false: "disabled"}[enabled])

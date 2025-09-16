@@ -1,12 +1,12 @@
 package cmd
 
 import (
-	"fmt"
+	"log/slog"
 	"os"
 
-	"github.com/spf13/cobra"
-
+	"github.com/AtifChy/aiub-notice/internal/logger"
 	"github.com/AtifChy/aiub-notice/internal/service"
+	"github.com/spf13/cobra"
 )
 
 // stopCmd represents the stop command
@@ -18,18 +18,18 @@ var stopCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		proc, err := service.GetProcessFromLock()
 		if err != nil {
-			fmt.Println("Error retrieving service process:", err)
+			logger.L().Error("retrieving service process", slog.String("error", err.Error()))
 			return
 		}
 		if proc == nil {
-			fmt.Println("No running service found.")
+			logger.L().Info("no running service found.")
 			return
 		}
 		if err = proc.Signal(os.Kill); err != nil {
-			fmt.Println("Error sending interrupt signal:", err)
+			logger.L().Error("sending interrupt signal", slog.String("error", err.Error()))
 			return
 		}
-		fmt.Println("Service stopped successfully.")
+		logger.L().Info("service stopped successfully.")
 	},
 }
 
