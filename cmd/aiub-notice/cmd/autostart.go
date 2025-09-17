@@ -28,21 +28,21 @@ var autostartCmd = &cobra.Command{
 				return fmt.Errorf("enabling autostart: %w", err)
 			}
 
-			logger.L().Info("Autostart enabled for AIUB Notice Fetcher service.")
+			logger.L().Info("autostart enabled for AIUB Notice Fetcher service.")
 		} else if disable, _ := cmd.Flags().GetBool("disable"); disable {
 			err := autostart.DisableAutostart()
 			if err != nil {
 				return fmt.Errorf("disabling autostart: %w", err)
 			}
 
-			logger.L().Info("Autostart disabled for AIUB Notice Fetcher service.")
+			logger.L().Info("autostart disabled for AIUB Notice Fetcher service.")
 		} else if status, _ := cmd.Flags().GetBool("status"); status {
 			enabled, err := autostart.IsAutostartEnabled()
 			if err != nil {
 				return fmt.Errorf("checking autostart status: %w", err)
 			}
 
-			fmt.Printf("Autostart is currently %s.\n", map[bool]string{true: "enabled", false: "disabled"}[enabled])
+			fmt.Printf("autostart is currently %s.\n", map[bool]string{true: "enabled", false: "disabled"}[enabled])
 		} else {
 			_ = cmd.Help()
 		}

@@ -15,7 +15,7 @@ import (
 func getStartupPath() (string, error) {
 	appData, err := os.UserConfigDir()
 	if err != nil {
-		return "", fmt.Errorf("failed to get appdata directory: %w", err)
+		return "", fmt.Errorf("get appdata directory: %w", err)
 	}
 	startupPath := filepath.Join(appData, "Microsoft", "Windows", "Start Menu", "Programs", "Startup")
 	return startupPath, nil
@@ -24,12 +24,12 @@ func getStartupPath() (string, error) {
 func EnableAutostart(interval time.Duration) error {
 	exePath, err := os.Executable()
 	if err != nil {
-		return fmt.Errorf("failed to get executable path: %w", err)
+		return fmt.Errorf("get executable path: %w", err)
 	}
 
 	exePath, err = filepath.Abs(exePath)
 	if err != nil {
-		return fmt.Errorf("failed to get absolute path of executable: %w", err)
+		return fmt.Errorf("get absolute path of executable: %w", err)
 	}
 	exeDir := filepath.Dir(exePath)
 
@@ -59,7 +59,7 @@ func DisableAutostart() error {
 
 	scPath := filepath.Join(startupPath, common.AppName+".lnk")
 	if err = os.Remove(scPath); os.IsExist(err) {
-		return fmt.Errorf("failed to remove autostart file: %w", err)
+		return fmt.Errorf("remove autostart file: %w", err)
 	}
 
 	return nil
