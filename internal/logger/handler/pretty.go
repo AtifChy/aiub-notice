@@ -15,17 +15,23 @@ import (
 )
 
 type PrettyHandler struct {
-	opts slog.HandlerOptions
-	w    io.Writer
+	opts       slog.HandlerOptions
+	w          io.Writer
+	sourceRoot string
 }
 
 func NewPrettyHandler(w io.Writer, opts *slog.HandlerOptions) *PrettyHandler {
 	if opts == nil {
 		opts = &slog.HandlerOptions{}
 	}
+
+	_, b, _, _ := runtime.Caller(0)
+	sourceRoot := path.Join(b, "../../../..")
+
 	return &PrettyHandler{
-		opts: *opts,
-		w:    w,
+		opts:       *opts,
+		w:          w,
+		sourceRoot: sourceRoot,
 	}
 }
 
@@ -48,15 +54,7 @@ func (h *PrettyHandler) Handle(_ context.Context, record slog.Record) error {
 	var src string
 	if h.opts.AddSource && record.PC != 0 {
 		source := record.Source()
-
-		_, b, _, _ := runtime.Caller(0)
-		rootDir := path.Base(path.Join(b, "../../../.."))
-
-		idx := strings.Index(source.File, rootDir)
-		file := source.File
-		if idx != -1 {
-			file = source.File[idx+len(rootDir)+1:]
-		}
+		file := strings.TrimPrefix(source.File, h.sourceRoot+"/")
 
 		var sb strings.Builder
 		sb.WriteString(file)

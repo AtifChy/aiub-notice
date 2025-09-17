@@ -15,6 +15,9 @@ func NewMultiHandler(handlers ...slog.Handler) *MultiHandler {
 
 func (h *MultiHandler) Handle(ctx context.Context, record slog.Record) error {
 	for _, hh := range h.handlers {
+		if !hh.Enabled(ctx, record.Level) {
+			continue
+		}
 		if err := hh.Handle(ctx, record); err != nil {
 			return err
 		}

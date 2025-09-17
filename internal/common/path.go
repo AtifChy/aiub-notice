@@ -68,6 +68,5 @@ func GetIconPath() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("get data path: %w", err)
 	}
-
 	return ensureIconExists(filepath.Join(dataPath, "aiub-icon.svg"))
 }
