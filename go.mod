@@ -7,7 +7,7 @@ require (
 	github.com/PuerkitoBio/goquery v1.10.3
 	github.com/allan-simon/go-singleinstance v0.0.0-20210120080615-d0997106ab37
 	github.com/charmbracelet/bubbles v0.21.0
-	github.com/charmbracelet/bubbletea v1.3.8
+	github.com/charmbracelet/bubbletea v1.3.9
 	github.com/charmbracelet/lipgloss v1.1.0
 	github.com/evertras/bubble-table v0.19.2
 	github.com/fatih/color v1.18.0
