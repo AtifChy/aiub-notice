@@ -1,16 +1,22 @@
 package cmd
 
 import (
+	"bufio"
+	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log/slog"
 	"os"
+	"time"
 
 	"github.com/spf13/cobra"
 
 	"github.com/AtifChy/aiub-notice/internal/common"
 	"github.com/AtifChy/aiub-notice/internal/logger"
 )
+
+var showSource bool
 
 // logCmd represents the log command
 var logCmd = &cobra.Command{
@@ -29,6 +35,10 @@ var logCmd = &cobra.Command{
 			return nil
 		}
 
+		if source, _ := cmd.Flags().GetBool("source"); source {
+			showSource = true
+		}
+
 		logFile, err := os.Open(logPath)
 		if os.IsNotExist(err) {
 			logger.L().Info("log file does not exist", slog.String("path", logPath))
@@ -39,11 +49,8 @@ var logCmd = &cobra.Command{
 		defer logFile.Close()
 
 		fmt.Printf("--- Displaying logs from %s ---\n", logPath)
-		if _, err := io.Copy(os.Stdout, logFile); err != nil {
-			return fmt.Errorf("reading log file: %w", err)
-		}
 
-		return nil
+		return replayLogs(logFile)
 	},
 }
 
@@ -51,4 +58,67 @@ func init() {
 	rootCmd.AddCommand(logCmd)
 
 	logCmd.Flags().Bool("clear", false, "Clear the log file")
+	logCmd.Flags().Bool("source", false, "Show source information in logs")
+}
+
+func replayLogs(logFile io.Reader) error {
+	var err error
+
+	scanner := bufio.NewScanner(logFile)
+
+	for scanner.Scan() {
+		var obj map[string]any
+		if err := json.Unmarshal(scanner.Bytes(), &obj); err != nil {
+			continue
+		}
+
+		var datetime time.Time
+		if t, ok := obj[slog.TimeKey].(string); ok {
+			datetime, err = time.Parse(time.RFC3339, t)
+			if err != nil {
+				return fmt.Errorf("parsing time from log: %w", err)
+			}
+		}
+
+		var level slog.Level
+		if l, ok := obj[slog.LevelKey].(string); ok {
+			switch l {
+			case "DEBUG":
+				level = slog.LevelDebug
+			case "INFO":
+				level = slog.LevelInfo
+			case "WARN":
+				level = slog.LevelWarn
+			case "ERROR":
+				level = slog.LevelError
+			}
+		}
+
+		var msg string
+		if m, ok := obj[slog.MessageKey].(string); ok {
+			msg = m
+		}
+
+		r := slog.Record{
+			Time:    datetime,
+			Level:   level,
+			Message: msg,
+		}
+
+		for k, v := range obj {
+			if k == slog.TimeKey || k == slog.LevelKey || k == slog.MessageKey {
+				continue
+			} else if k == slog.SourceKey && !showSource {
+				continue
+			}
+			r.AddAttrs(slog.Any(k, v))
+		}
+
+		err = logger.L().Handler().Handle(context.Background(), r)
+		if err != nil {
+			return fmt.Errorf("handling log record: %w", err)
+		}
+	}
+
+	return scanner.Err()
 }
