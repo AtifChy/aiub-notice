@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log/slog"
 
 	"github.com/spf13/cobra"
 
@@ -34,10 +35,10 @@ Examples:
 			if err = appid.Register(common.AppID, common.DisplayName, iconPath); err != nil {
 				return fmt.Errorf("registering appid: %w", err)
 			}
-			logger.L().Info("successfully registered AIUB Notice toast application", "appid", common.AppID)
+			logger.L().Info("successfully registered AIUB Notice toast application", slog.String("appid", common.AppID))
 		} else if unregister, _ := cmd.Flags().GetBool("unregister"); unregister {
 			appid.Unregister(common.AppID)
-			logger.L().Info("successfully unregistered AIUB Notice toast application", "appid", common.AppID)
+			logger.L().Info("successfully unregistered AIUB Notice toast application", slog.String("appid", common.AppID))
 		} else {
 			_ = cmd.Help()
 		}
