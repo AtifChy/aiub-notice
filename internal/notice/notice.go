@@ -97,7 +97,7 @@ func httpGetWithRetry(url string, maxRetries int) (*http.Response, error) {
 			return response, nil
 		}
 
-		waitTime := time.Duration(1<<(i+1)) * time.Second
+		waitTime := time.Duration((i+1)*2) * time.Second
 		logger.L().Warn(
 			"HTTP GET attempt failed",
 			slog.Int("attempt", i+1),

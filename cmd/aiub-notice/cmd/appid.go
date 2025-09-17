@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"log/slog"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -29,11 +30,11 @@ Examples:
 		if register, _ := cmd.Flags().GetBool("register"); register {
 			iconPath, err := common.GetIconPath()
 			if err != nil {
-				logger.L().Error("getting icon path", "error", err)
+				logger.L().Error("getting icon path", slog.String("error", err.Error()))
 				os.Exit(1)
 			}
 			if err = appid.Register(common.AppID, common.DisplayName, iconPath); err != nil {
-				logger.L().Error("registering appid", "error", err)
+				logger.L().Error("registering appid", slog.String("error", err.Error()))
 				os.Exit(1)
 			}
 			logger.L().Info("successfully registered AIUB Notice toast application", "appid", common.AppID)
