@@ -38,9 +38,9 @@ Examples:
 		} else if unregister, _ := cmd.Flags().GetBool("unregister"); unregister {
 			appid.Unregister(common.AppID)
 			logger.L().Info("successfully unregistered AIUB Notice toast application", "appid", common.AppID)
+		} else {
+			_ = cmd.Help()
 		}
-
-		_ = cmd.Help()
 		return nil
 	},
 }

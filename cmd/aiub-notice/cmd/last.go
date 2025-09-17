@@ -28,7 +28,6 @@ Examples:
 	RunE: func(cmd *cobra.Command, args []string) error {
 		nums, err := cmd.Flags().GetIntSlice("num")
 		if err != nil {
-			// logger.L().Error("parsing num flag", slog.String("error", err.Error()))
 			return fmt.Errorf("parsing num flag: %w", err)
 		}
 

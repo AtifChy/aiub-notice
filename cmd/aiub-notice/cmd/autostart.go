@@ -43,9 +43,9 @@ var autostartCmd = &cobra.Command{
 			}
 
 			fmt.Printf("Autostart is currently %s.\n", map[bool]string{true: "enabled", false: "disabled"}[enabled])
+		} else {
+			_ = cmd.Help()
 		}
-
-		_ = cmd.Help()
 		return nil
 	},
 }
