@@ -13,31 +13,31 @@ const iconURL = "https://www.aiub.edu/Files/Templates/AIUBv3/assets/images/aiub-
 func fetchIcon(url, dest string) error {
 	response, err := http.Get(url)
 	if err != nil {
-		return fmt.Errorf("failed to download icon: %w", err)
+		return fmt.Errorf("download icon: %w", err)
 	}
 	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusOK {
-		return fmt.Errorf("failed to download icon: received status code %d", response.StatusCode)
+		return fmt.Errorf("download icon: received status code %d", response.StatusCode)
 	}
 
 	dir := filepath.Dir(dest)
 	tmp, err := os.CreateTemp(dir, "aiub-icon-*.svg")
 	if err != nil {
-		return fmt.Errorf("failed to create temp icon file: %w", err)
+		return fmt.Errorf("create temp icon file: %w", err)
 	}
 	defer os.Remove(tmp.Name())
 
 	if _, err := io.Copy(tmp, response.Body); err != nil {
-		return fmt.Errorf("failed to write icon file: %w", err)
+		return fmt.Errorf("write icon file: %w", err)
 	}
 
 	if err := tmp.Close(); err != nil {
-		return fmt.Errorf("failed to close temp icon file: %w", err)
+		return fmt.Errorf("close temp icon file: %w", err)
 	}
 
 	if err := os.Rename(tmp.Name(), dest); err != nil {
-		return fmt.Errorf("failed to move temp icon into place: %w", err)
+		return fmt.Errorf("move temp icon into place: %w", err)
 	}
 
 	return nil
@@ -48,17 +48,17 @@ func fetchIcon(url, dest string) error {
 func ensureIconExists(path string) (string, error) {
 	iconPath, err := filepath.Abs(path)
 	if err != nil {
-		return "", fmt.Errorf("failed to get icon absolute path: %w", err)
+		return "", fmt.Errorf("get icon absolute path: %w", err)
 	}
 
 	info, err := os.Stat(iconPath)
 	if err != nil && !os.IsNotExist(err) {
-		return "", fmt.Errorf("failed to stat icon file: %w", err)
+		return "", fmt.Errorf("stat icon file: %w", err)
 	}
 
 	if (info != nil && info.Size() <= 0) || os.IsNotExist(err) {
 		if err = fetchIcon(iconURL, iconPath); err != nil {
-			return "", fmt.Errorf("failed to download icon: %w", err)
+			return "", fmt.Errorf("download icon: %w", err)
 		}
 	}
 

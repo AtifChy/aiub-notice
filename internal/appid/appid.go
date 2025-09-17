@@ -19,17 +19,17 @@ func Register(appID, displayName, iconPath string) error {
 
 	key, _, err := registry.CreateKey(registry.CURRENT_USER, regPath, registry.SET_VALUE)
 	if err != nil {
-		return fmt.Errorf("failed to create registry key %s: %w", regPath, err)
+		return fmt.Errorf("create registry key %s: %w", regPath, err)
 	}
 	defer key.Close()
 
 	if err := key.SetStringValue("DisplayName", displayName); err != nil {
-		return fmt.Errorf("failed to set DisplayName for %s: %w", appID, err)
+		return fmt.Errorf("set DisplayName for %s: %w", appID, err)
 	}
 
 	if iconPath != "" {
 		if err := key.SetStringValue("IconUri", iconPath); err != nil {
-			return fmt.Errorf("failed to set IconUri for %s: %w", appID, err)
+			return fmt.Errorf("set IconUri for %s: %w", appID, err)
 		}
 	} else {
 		// when iconPath is empty, remove any existing IconUri value
@@ -44,7 +44,7 @@ func Unregister(appID string) error {
 
 	err := registry.DeleteKey(registry.CURRENT_USER, regPath)
 	if err != nil {
-		return fmt.Errorf("failed to delete registry key %s: %w", regPath, err)
+		return fmt.Errorf("delete registry key %s: %w", regPath, err)
 	}
 
 	return nil

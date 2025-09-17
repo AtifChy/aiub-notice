@@ -10,7 +10,7 @@ import (
 func GetDataPath() (string, error) {
 	cacheDir, err := os.UserCacheDir()
 	if err != nil {
-		return "", fmt.Errorf("failed to get user data directory: %w", err)
+		return "", fmt.Errorf("get user data directory: %w", err)
 	}
 	return filepath.Join(cacheDir, AppName), nil
 }
@@ -48,7 +48,7 @@ func GetLogFile() (*os.File, error) {
 func GetTempPath() (string, error) {
 	tempDir := filepath.Join(os.TempDir(), AppName)
 	if err := os.MkdirAll(tempDir, 0o755); err != nil {
-		return "", fmt.Errorf("failed to create temporary directory: %w", err)
+		return "", fmt.Errorf("create temporary directory: %w", err)
 	}
 	return tempDir, nil
 }
@@ -57,7 +57,7 @@ func GetTempPath() (string, error) {
 func GetLockPath() (string, error) {
 	lockDir, err := GetTempPath()
 	if err != nil {
-		return "", fmt.Errorf("failed to get temporary directory: %w", err)
+		return "", fmt.Errorf("get temporary directory: %w", err)
 	}
 	return filepath.Join(lockDir, AppName+".lock"), nil
 }
@@ -66,7 +66,7 @@ func GetLockPath() (string, error) {
 func GetIconPath() (string, error) {
 	dataPath, err := GetDataPath()
 	if err != nil {
-		return "", fmt.Errorf("failed to get data path: %w", err)
+		return "", fmt.Errorf("get data path: %w", err)
 	}
 
 	return ensureIconExists(filepath.Join(dataPath, "aiub-icon.svg"))
