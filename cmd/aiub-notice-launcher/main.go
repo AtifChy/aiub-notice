@@ -12,6 +12,11 @@ import (
 )
 
 func main() {
+	status := run()
+	os.Exit(status)
+}
+
+func run() int {
 	logfile, _ := common.GetLogFile()
 	defer logfile.Close()
 	logger.SetOutputFile(logfile)
@@ -19,7 +24,7 @@ func main() {
 	exe, err := os.Executable()
 	if err != nil {
 		logger.L().Error("getting executable path", slog.String("error", err.Error()))
-		os.Exit(1)
+		return 1
 	}
 
 	dir := filepath.Dir(exe)
@@ -30,6 +35,8 @@ func main() {
 
 	if err := cmd.Start(); err != nil {
 		logger.L().Error("starting command", slog.String("error", err.Error()))
-		os.Exit(1)
+		return 1
 	}
+
+	return 0
 }

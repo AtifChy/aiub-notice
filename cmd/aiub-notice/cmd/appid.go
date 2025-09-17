@@ -1,8 +1,7 @@
 package cmd
 
 import (
-	"log/slog"
-	"os"
+	"fmt"
 
 	"github.com/spf13/cobra"
 
@@ -26,24 +25,23 @@ Examples:
 
 	# unregister the application appid
 	aiub-notice appid --unregister`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		if register, _ := cmd.Flags().GetBool("register"); register {
 			iconPath, err := common.GetIconPath()
 			if err != nil {
-				logger.L().Error("getting icon path", slog.String("error", err.Error()))
-				os.Exit(1)
+				return fmt.Errorf("getting icon path: %w", err)
 			}
 			if err = appid.Register(common.AppID, common.DisplayName, iconPath); err != nil {
-				logger.L().Error("registering appid", slog.String("error", err.Error()))
-				os.Exit(1)
+				return fmt.Errorf("registering appid: %w", err)
 			}
 			logger.L().Info("successfully registered AIUB Notice toast application", "appid", common.AppID)
 		} else if unregister, _ := cmd.Flags().GetBool("unregister"); unregister {
 			appid.Unregister(common.AppID)
 			logger.L().Info("successfully unregistered AIUB Notice toast application", "appid", common.AppID)
-		} else {
-			_ = cmd.Help()
 		}
+
+		_ = cmd.Help()
+		return nil
 	},
 }
 

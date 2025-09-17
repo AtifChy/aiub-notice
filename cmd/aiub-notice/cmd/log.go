@@ -17,34 +17,33 @@ var logCmd = &cobra.Command{
 	Use:   "log",
 	Short: "View the log of notices",
 	Long:  `View the log of notices fetched by the AIUB Notice Fetcher.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		logPath := common.GetLogPath()
 
 		if clear, _ := cmd.Flags().GetBool("clear"); clear {
 			err := os.Truncate(logPath, 0)
 			if err != nil && !os.IsNotExist(err) {
-				logger.L().Error("clearing log file", slog.String("error", err.Error()))
-				os.Exit(1)
-			} else {
-				logger.L().Info("log file cleared")
+				return fmt.Errorf(`clearing log file: %w`, err)
 			}
-			return
+			logger.L().Info("log file cleared")
+			return nil
 		}
 
 		logFile, err := os.Open(logPath)
 		if os.IsNotExist(err) {
-			fmt.Println("No log file found. Please run the service first to generate logs.")
-			os.Exit(0)
+			logger.L().Info("log file does not exist", slog.String("path", logPath))
+			return nil
 		} else if err != nil {
-			logger.L().Error("opening log file", slog.String("error", err.Error()))
+			return fmt.Errorf("opening log file: %w", err)
 		}
 		defer logFile.Close()
 
 		fmt.Printf("--- Displaying logs from %s ---\n", logPath)
 		if _, err := io.Copy(os.Stdout, logFile); err != nil {
-			logger.L().Error("reading log file", slog.String("error", err.Error()))
-			os.Exit(1)
+			return fmt.Errorf("reading log file: %w", err)
 		}
+
+		return nil
 	},
 }
 

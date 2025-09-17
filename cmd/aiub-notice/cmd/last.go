@@ -1,8 +1,8 @@
 package cmd
 
 import (
+	"fmt"
 	"log/slog"
-	"os"
 	"sort"
 
 	"github.com/spf13/cobra"
@@ -25,11 +25,11 @@ Examples:
 	# trigger toast for multiple notices, e.g., last 1st, 3rd, and 5th notices
 	aiub-notice last -n 1,3,5
 `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		nums, err := cmd.Flags().GetIntSlice("num")
 		if err != nil {
-			logger.L().Error("parsing num flag", slog.String("error", err.Error()))
-			os.Exit(1)
+			// logger.L().Error("parsing num flag", slog.String("error", err.Error()))
+			return fmt.Errorf("parsing num flag: %w", err)
 		}
 
 		numsMap := make(map[int]struct{})
@@ -39,18 +39,16 @@ Examples:
 
 		seen, err := notice.LoadSeenNotices()
 		if err != nil {
-			logger.L().Error("loading seen notices", slog.String("error", err.Error()))
-			os.Exit(1)
+			return fmt.Errorf("loading seen notices: %w", err)
 		}
 		if len(seen) == 0 {
 			logger.L().Warn("no notices have been fetched yet")
-			return
+			return nil
 		}
 
 		notices, err := notice.GetCachedNotices()
 		if err != nil {
-			logger.L().Error("fetching cached notices", slog.String("error", err.Error()))
-			os.Exit(1)
+			return fmt.Errorf("fetching cached notices: %w", err)
 		}
 
 		sort.Slice(notices, func(i int, j int) bool {
@@ -59,7 +57,7 @@ Examples:
 
 		if len(notices) == 0 {
 			logger.L().Warn("no new notices found")
-			return
+			return nil
 		}
 
 		for idx, n := range notices {
@@ -71,6 +69,8 @@ Examples:
 				logger.L().Info("triggered toast for notice", slog.String("title", n.Title), slog.String("link", n.Link))
 			}
 		}
+
+		return nil
 	},
 }
 

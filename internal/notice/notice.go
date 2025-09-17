@@ -44,6 +44,11 @@ func GetNotices() ([]Notice, error) {
 		return nil, fmt.Errorf("parse HTML: %w", err)
 	}
 
+	loc, err := time.LoadLocation("Asia/Dhaka")
+	if err != nil {
+		return nil, fmt.Errorf("loading location: %w", err)
+	}
+
 	document.Find("div.notification").Each(func(_ int, selection *goquery.Selection) {
 		title := strings.TrimSpace(selection.Find("h2.title").Text())
 		desc := strings.TrimSpace(selection.Find("p.desc").Text())
@@ -53,10 +58,6 @@ func GetNotices() ([]Notice, error) {
 		re := regexp.MustCompile(`[\s\n]+`)
 		dateStr = re.ReplaceAllString(dateStr, " ")
 
-		loc, err := time.LoadLocation("Asia/Dhaka")
-		if err != nil {
-			logger.L().Error("loading location", slog.String("error", err.Error()))
-		}
 		date, err := time.ParseInLocation("2 Jan 2006", dateStr, loc)
 		if err != nil {
 			logger.L().Warn("parsing date",
@@ -77,7 +78,7 @@ func GetNotices() ([]Notice, error) {
 	})
 
 	if err := storeCachedNotices(notices); err != nil {
-		logger.L().Error("caching notices", slog.String("error", err.Error()))
+		logger.L().Warn("caching notices", slog.String("error", err.Error()))
 	}
 
 	return notices, nil
