@@ -2,11 +2,13 @@
 package cmd
 
 import (
-	"log"
+	"log/slog"
+	"os"
 
 	"github.com/spf13/cobra"
 
 	"github.com/AtifChy/aiub-notice/internal/common"
+	"github.com/AtifChy/aiub-notice/internal/logger"
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -22,6 +24,7 @@ var rootCmd = &cobra.Command{
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
-		log.Fatalf("Error executing command: %v", err)
+		logger.L().Error("executing command", slog.String("error", err.Error()))
+		os.Exit(1)
 	}
 }

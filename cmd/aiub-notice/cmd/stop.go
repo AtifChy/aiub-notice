@@ -4,9 +4,10 @@ import (
 	"log/slog"
 	"os"
 
+	"github.com/spf13/cobra"
+
 	"github.com/AtifChy/aiub-notice/internal/logger"
 	"github.com/AtifChy/aiub-notice/internal/service"
-	"github.com/spf13/cobra"
 )
 
 // stopCmd represents the stop command
