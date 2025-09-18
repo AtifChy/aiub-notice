@@ -84,6 +84,8 @@ func GetNotices() ([]Notice, error) {
 	return notices, nil
 }
 
+var sleep = time.Sleep
+
 func httpGetWithRetry(url string, maxRetries int) (*http.Response, error) {
 	var response *http.Response
 	var err error
@@ -105,7 +107,7 @@ func httpGetWithRetry(url string, maxRetries int) (*http.Response, error) {
 			slog.String("error", err.Error()),
 			slog.String("wait", waitTime.String()),
 		)
-		time.Sleep(waitTime)
+		sleep(waitTime)
 	}
 
 	return nil, fmt.Errorf("all retries failed: %w", err)
