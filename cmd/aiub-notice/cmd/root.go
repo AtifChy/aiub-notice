@@ -26,11 +26,10 @@ func Execute() error {
 		logger.L().Error("open log file", slog.String("error", err.Error()))
 		logger.L().Warn("logging to file is disabled.")
 	}
-	defer func() {
-		if logFile != nil {
-			_ = logFile.Close()
-		}
-	}()
+	if logFile != nil {
+		logger.SetOutputFile(logFile)
+		defer logFile.Close()
+	}
 
 	return rootCmd.Execute()
 }

@@ -14,6 +14,7 @@ import (
 
 	"github.com/AtifChy/aiub-notice/internal/common"
 	"github.com/AtifChy/aiub-notice/internal/logger"
+	"github.com/AtifChy/aiub-notice/internal/logger/handler"
 )
 
 var showSource bool
@@ -63,7 +64,10 @@ func init() {
 
 func replayLogs(logFile io.Reader) error {
 	var err error
-
+	out := slog.New(handler.NewPrettyHandler(
+		os.Stdout,
+		&slog.HandlerOptions{Level: slog.LevelDebug},
+	))
 	scanner := bufio.NewScanner(logFile)
 
 	for scanner.Scan() {
@@ -114,7 +118,7 @@ func replayLogs(logFile io.Reader) error {
 			r.AddAttrs(slog.Any(k, v))
 		}
 
-		err = logger.L().Handler().Handle(context.Background(), r)
+		err = out.Handler().Handle(context.Background(), r)
 		if err != nil {
 			return fmt.Errorf("handling log record: %w", err)
 		}
