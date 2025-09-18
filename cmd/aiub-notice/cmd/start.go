@@ -26,17 +26,9 @@ func init() {
 	rootCmd.AddCommand(startCmd)
 
 	startCmd.Flags().DurationP("interval", "i", 30*time.Minute, "Set the interval for fetching notices")
-	startCmd.Flags().Bool("quiet", false, "Suppress console output")
 }
 
 func run(cmd *cobra.Command, args []string) {
-	quiet, _ := cmd.Flags().GetBool("quiet")
-	if quiet {
-		null, _ := os.OpenFile(os.DevNull, os.O_WRONLY, 0)
-		os.Stdout = null
-		os.Stderr = null
-	}
-
 	logfile, err := common.GetLogFile()
 	if err != nil {
 		logger.L().Error("open log file", slog.String("error", err.Error()))

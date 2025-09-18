@@ -34,7 +34,7 @@ func EnableAutostart(interval time.Duration) error {
 	exeDir := filepath.Dir(exePath)
 
 	launcherPath := filepath.Join(exeDir, common.LauncherName+".exe")
-	args := fmt.Sprintf("start --interval %s --quiet", interval)
+	args := fmt.Sprintf("start --interval %s", interval)
 
 	startupPath, err := getStartupPath()
 	if err != nil {
