@@ -85,17 +85,8 @@ func replayLogs(logFile io.Reader) error {
 		}
 
 		var level slog.Level
-		if l, ok := obj[slog.LevelKey].(string); ok {
-			switch l {
-			case "DEBUG":
-				level = slog.LevelDebug
-			case "INFO":
-				level = slog.LevelInfo
-			case "WARN":
-				level = slog.LevelWarn
-			case "ERROR":
-				level = slog.LevelError
-			}
+		if l, ok := obj[slog.LevelKey].(slog.Level); ok {
+			level = l
 		}
 
 		var msg string
