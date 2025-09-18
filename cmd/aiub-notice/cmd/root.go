@@ -1,9 +1,8 @@
-// Package cmd
+// Package cmd provides the command-line interface for the AIUB Notice Notifier application.
 package cmd
 
 import (
 	"log/slog"
-	"os"
 
 	"github.com/spf13/cobra"
 
@@ -21,9 +20,17 @@ var rootCmd = &cobra.Command{
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
-func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		logger.L().Error("executing command", slog.String("error", err.Error()))
-		os.Exit(1)
+func Execute() error {
+	logFile, err := common.GetLogFile()
+	if err != nil {
+		logger.L().Error("open log file", slog.String("error", err.Error()))
+		logger.L().Warn("logging to file is disabled.")
 	}
+	defer func() {
+		if logFile != nil {
+			_ = logFile.Close()
+		}
+	}()
+
+	return rootCmd.Execute()
 }

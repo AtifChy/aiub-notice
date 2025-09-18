@@ -29,16 +29,6 @@ func init() {
 }
 
 func run(cmd *cobra.Command, args []string) {
-	logfile, err := common.GetLogFile()
-	if err != nil {
-		logger.L().Error("open log file", slog.String("error", err.Error()))
-		logger.L().Warn("logging to file is disabled.")
-	}
-	if logfile != nil {
-		logger.SetOutputFile(logfile)
-		defer logfile.Close()
-	}
-
 	lock, err := acquireLock()
 	if err != nil {
 		logger.L().Info("another instance is already running, exiting...")
