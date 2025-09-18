@@ -15,12 +15,10 @@ var (
 	opts   slog.HandlerOptions
 )
 
-func init() {
-	opts = slog.HandlerOptions{
-		AddSource: true,
-		Level:     slog.LevelDebug,
-	}
+// L returns the global logger instance.
+func L() *slog.Logger { return logger }
 
+func Default() *slog.Logger {
 	var rootHandler slog.Handler
 	if isInteractive() {
 		rootHandler = handler.NewPrettyHandler(os.Stderr, &opts)
@@ -28,7 +26,7 @@ func init() {
 		rootHandler = slog.NewJSONHandler(os.Stderr, &opts)
 	}
 
-	logger = slog.New(rootHandler)
+	return slog.New(rootHandler)
 }
 
 func SetOutputFile(logfile *os.File) {
@@ -45,9 +43,14 @@ func SetOutputFile(logfile *os.File) {
 	logger = slog.New(rootHandler)
 }
 
+func init() {
+	opts = slog.HandlerOptions{
+		AddSource: true,
+		Level:     slog.LevelDebug,
+	}
+	logger = Default()
+}
+
 func isInteractive() bool {
 	return term.IsTerminal(int(os.Stderr.Fd()))
 }
-
-// L returns the global logger instance.
-func L() *slog.Logger { return logger }
