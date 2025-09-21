@@ -8,11 +8,11 @@ import (
 	"regexp"
 	"strings"
 	"time"
-
 	_ "time/tzdata"
 
-	"github.com/AtifChy/aiub-notice/internal/logger"
 	"github.com/PuerkitoBio/goquery"
+
+	"github.com/AtifChy/aiub-notice/internal/logger"
 )
 
 type Notice struct {
