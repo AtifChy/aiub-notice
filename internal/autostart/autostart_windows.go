@@ -1,3 +1,5 @@
+//go:build windows
+
 // Package autostart provides functions to manage the autostart behavior of the application on Windows.
 package autostart
 
