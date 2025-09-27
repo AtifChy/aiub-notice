@@ -32,7 +32,7 @@ func Test_httpGetWithRetry(t *testing.T) {
 				if err != nil {
 					t.Fatalf("unexpected error: %v", err)
 				}
-				defer resp.Body.Close()
+				defer func() { _ = resp.Body.Close() }()
 				b, _ := io.ReadAll(resp.Body)
 				if string(b) != "OK" {
 					t.Fatalf("unexpected error: %v", err)
@@ -63,7 +63,7 @@ func Test_httpGetWithRetry(t *testing.T) {
 				if err != nil {
 					t.Fatalf("expected success after retries, got error: %v", err)
 				}
-				defer resp.Body.Close()
+				defer func() { _ = resp.Body.Close() }()
 			},
 		},
 		{

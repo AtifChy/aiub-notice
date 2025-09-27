@@ -33,7 +33,7 @@ func GetNotices() ([]Notice, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer response.Body.Close()
+	defer func() { _ = response.Body.Close() }()
 
 	if response.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("received status code %d", response.StatusCode)

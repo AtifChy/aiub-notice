@@ -64,7 +64,9 @@ Examples:
 				continue
 			}
 			if _, ok := seen[n.Link]; ok {
-				toast.Show(n)
+				if err := toast.Show(n); err != nil {
+					return fmt.Errorf("showing toast: %w", err)
+				}
 				logger.L().Info("triggered toast for notice", slog.String("title", n.Title), slog.String("link", n.Link))
 			}
 		}

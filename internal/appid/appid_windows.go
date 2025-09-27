@@ -21,7 +21,7 @@ func Register(appID, displayName, iconPath string) error {
 	if err != nil {
 		return fmt.Errorf("create registry key %s: %w", regPath, err)
 	}
-	defer key.Close()
+	defer func() { _ = key.Close() }()
 
 	if err := key.SetStringValue("DisplayName", displayName); err != nil {
 		return fmt.Errorf("set DisplayName for %s: %w", appID, err)

@@ -47,7 +47,7 @@ var logCmd = &cobra.Command{
 		} else if err != nil {
 			return fmt.Errorf("opening log file: %w", err)
 		}
-		defer logFile.Close()
+		defer func() { _ = logFile.Close() }()
 
 		fmt.Printf("--- Displaying logs from %s ---\n", logPath)
 

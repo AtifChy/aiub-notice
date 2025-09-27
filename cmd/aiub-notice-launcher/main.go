@@ -20,7 +20,7 @@ func main() {
 
 func run() int {
 	logfile, _ := common.GetLogFile()
-	defer logfile.Close()
+	defer func() { _ = logfile.Close() }()
 	logger.SetOutputFile(logfile)
 
 	exe, err := os.Executable()

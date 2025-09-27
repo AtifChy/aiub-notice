@@ -15,7 +15,7 @@ func fetchIcon(url, dest string) error {
 	if err != nil {
 		return fmt.Errorf("download icon: %w", err)
 	}
-	defer response.Body.Close()
+	defer func() { _ = response.Body.Close() }()
 
 	if response.StatusCode != http.StatusOK {
 		return fmt.Errorf("download icon: received status code %d", response.StatusCode)
@@ -26,7 +26,7 @@ func fetchIcon(url, dest string) error {
 	if err != nil {
 		return fmt.Errorf("create temp icon file: %w", err)
 	}
-	defer os.Remove(tmp.Name())
+	defer func() { _ = os.Remove(tmp.Name()) }()
 
 	if _, err := io.Copy(tmp, response.Body); err != nil {
 		return fmt.Errorf("write icon file: %w", err)

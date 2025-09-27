@@ -28,7 +28,7 @@ func Execute() error {
 	}
 	if logFile != nil {
 		logger.SetOutputFile(logFile)
-		defer logFile.Close()
+		defer func() { _ = logFile.Close() }()
 	}
 
 	return rootCmd.Execute()

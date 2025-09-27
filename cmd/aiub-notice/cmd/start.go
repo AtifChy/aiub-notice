@@ -35,7 +35,7 @@ func run(cmd *cobra.Command, args []string) {
 		return
 	}
 	logger.L().Info("single instance lock acquired.")
-	defer lock.Close()
+	defer func() { _ = lock.Close() }()
 
 	checkInterval, err := cmd.Flags().GetDuration("interval")
 	if err != nil {

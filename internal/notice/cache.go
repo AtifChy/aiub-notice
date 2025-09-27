@@ -27,7 +27,7 @@ func storeCachedNotices(notices []Notice) error {
 	if err != nil {
 		return fmt.Errorf("create cache file: %w", err)
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	return json.NewEncoder(file).Encode(notices)
 }
@@ -42,7 +42,7 @@ func GetCachedNotices() ([]Notice, error) {
 	if err != nil {
 		return nil, fmt.Errorf("open cache file: %w", err)
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	var notices []Notice
 	if err := json.NewDecoder(file).Decode(&notices); err != nil {
@@ -73,7 +73,7 @@ func LoadSeenNotices() (map[string]struct{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	var seen map[string]struct{}
 	decoder := json.NewDecoder(file)
@@ -92,6 +92,7 @@ func SaveSeenNotices(seen map[string]struct{}) error {
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
+
 	return json.NewEncoder(file).Encode(seen)
 }

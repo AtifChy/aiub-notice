@@ -81,12 +81,12 @@ func (h *PrettyHandler) Handle(_ context.Context, record slog.Record) error {
 
 	// level
 	lineBuilder.WriteByte(' ')
-	levelColor.Fprintf(&lineBuilder, "[%s]", record.Level.String())
+	_, _ = levelColor.Fprintf(&lineBuilder, "[%s]", record.Level.String())
 
 	// source
 	if src != "" {
 		lineBuilder.WriteByte(' ')
-		color.New(color.FgHiBlack).Fprintf(&lineBuilder, "@%s", src)
+		_, _ = color.New(color.FgHiBlack).Fprintf(&lineBuilder, "@%s", src)
 	}
 
 	// message

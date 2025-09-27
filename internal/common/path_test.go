@@ -19,7 +19,7 @@ func withTempLogFile(t *testing.T, testFunc func(logPath string)) {
 	testFunc(logPath)
 }
 
-func TestGetLogFile(t *testing.T) {
+func Test_GetLogFile(t *testing.T) {
 	tests := []struct {
 		name  string
 		setup func(path string)
@@ -39,7 +39,7 @@ func TestGetLogFile(t *testing.T) {
 		{
 			name: "keep small file unchanged",
 			setup: func(path string) {
-				os.WriteFile(path, []byte("test"), 0o664)
+				_ = os.WriteFile(path, []byte("test"), 0o664)
 			},
 			check: func(t *testing.T, path string) {
 				data, _ := os.ReadFile(path)
@@ -52,7 +52,7 @@ func TestGetLogFile(t *testing.T) {
 			name: "truncate large file",
 			setup: func(path string) {
 				large := make([]byte, 6*1024*1024) // 6 MB
-				os.WriteFile(path, large, 0o664)
+				_ = os.WriteFile(path, large, 0o664)
 			},
 			check: func(t *testing.T, path string) {
 				info, _ := os.Stat(path)
@@ -71,7 +71,7 @@ func TestGetLogFile(t *testing.T) {
 				if err != nil {
 					t.Fatalf("GetLogFile() error: %v", err)
 				}
-				defer file.Close()
+				defer func() { _ = file.Close() }()
 
 				tt.check(t, logPath)
 			})
