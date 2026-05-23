@@ -12,7 +12,11 @@ func GetDataPath() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("get user data directory: %w", err)
 	}
-	return filepath.Join(cacheDir, AppName), nil
+	dataPath := filepath.Join(cacheDir, AppName)
+	if err := os.MkdirAll(dataPath, 0o755); err != nil {
+		return "", fmt.Errorf("create data directory: %w", err)
+	}
+	return dataPath, nil
 }
 
 var GetLogPath = func() string {

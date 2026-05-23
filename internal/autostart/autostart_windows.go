@@ -4,7 +4,9 @@
 package autostart
 
 import (
+	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"time"
@@ -60,7 +62,7 @@ func DisableAutostart() error {
 	}
 
 	scPath := filepath.Join(startupPath, common.AppName+".lnk")
-	if err = os.Remove(scPath); os.IsExist(err) {
+	if err = os.Remove(scPath); !errors.Is(err, fs.ErrNotExist) {
 		return fmt.Errorf("remove autostart file: %w", err)
 	}
 
