@@ -4,7 +4,9 @@ package logger
 import (
 	"log/slog"
 	"os"
+	"time"
 
+	"github.com/lmittmann/tint"
 	"golang.org/x/term"
 
 	"github.com/AtifChy/aiub-notice/internal/logger/handler"
@@ -21,7 +23,11 @@ func L() *slog.Logger { return logger }
 func Default() *slog.Logger {
 	var rootHandler slog.Handler
 	if isInteractive() {
-		rootHandler = handler.NewPrettyHandler(os.Stderr, &opts)
+		rootHandler = tint.NewHandler(os.Stderr, &tint.Options{
+			AddSource:  opts.AddSource,
+			Level:      opts.Level,
+			TimeFormat: time.DateTime,
+		})
 	} else {
 		rootHandler = slog.NewJSONHandler(os.Stderr, &opts)
 	}
@@ -34,7 +40,11 @@ func SetOutputFile(logfile *os.File) {
 
 	jsonHandler := slog.NewJSONHandler(logfile, &opts)
 	if isInteractive() {
-		prettyHandler := handler.NewPrettyHandler(os.Stderr, &opts)
+		prettyHandler := tint.NewHandler(os.Stderr, &tint.Options{
+			AddSource:  opts.AddSource,
+			Level:      opts.Level,
+			TimeFormat: time.DateTime,
+		})
 		rootHandler = handler.NewMultiHandler(prettyHandler, jsonHandler)
 	} else {
 		rootHandler = jsonHandler

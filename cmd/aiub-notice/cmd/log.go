@@ -10,11 +10,11 @@ import (
 	"os"
 	"time"
 
+	"github.com/lmittmann/tint"
 	"github.com/spf13/cobra"
 
 	"github.com/AtifChy/aiub-notice/internal/common"
 	"github.com/AtifChy/aiub-notice/internal/logger"
-	"github.com/AtifChy/aiub-notice/internal/logger/handler"
 )
 
 var showSource bool
@@ -64,9 +64,12 @@ func init() {
 
 func replayLogs(logFile io.Reader) error {
 	var err error
-	out := slog.New(handler.NewPrettyHandler(
+	out := slog.New(tint.NewHandler(
 		os.Stdout,
-		&slog.HandlerOptions{Level: slog.LevelDebug},
+		&tint.Options{
+			Level:      slog.LevelDebug,
+			TimeFormat: time.DateTime,
+		},
 	))
 	scanner := bufio.NewScanner(logFile)
 
